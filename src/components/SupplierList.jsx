@@ -71,10 +71,19 @@ export default function SupplierList() {
       setSuppliers(prev => prev.map(s => s.id === editingSupplier.id ? { ...s, ...formData } : s));
     } else {
       const newId = `#SUP${Math.floor(Math.random() * 90000) + 10000}`;
+      
+      // Format the date if it's in YYYY-MM-DD format from the picker
+      let formattedDate = formData.date;
+      if (formData.date.includes('-')) {
+        const d = new Date(formData.date);
+        formattedDate = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
       const newSup = {
         ...formData,
+        date: formattedDate,
         id: newId,
-        logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", // Default for demo
+        logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
         avatar: formData.avatar || `https://i.pravatar.cc/150?u=${formData.supplier}`
       };
       setSuppliers([newSup, ...suppliers]);
@@ -82,8 +91,6 @@ export default function SupplierList() {
     setIsModalOpen(false);
     setEditingSupplier(null);
   };
-
-  const fileInputRef = React.useRef(null);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
@@ -100,10 +107,14 @@ export default function SupplierList() {
     }
   };
 
-  const triggerFileInput = (e) => {
+  const removeAvatar = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    fileInputRef.current?.click();
+    setFormData(prev => ({
+      ...prev,
+      avatar: null,
+      avatarPreview: null
+    }));
   };
 
   const inputStyle = {
@@ -423,11 +434,10 @@ export default function SupplierList() {
                     <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Registered Date</label>
                     <div className="relative">
                       <input 
-                        type="text" 
-                        placeholder="08 Jun 2023" 
+                        type="date" 
                         className="w-full pl-14 pr-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" 
                         style={inputStyle}
-                        value={formData.date}
+                        value={formData.date.includes(' ') ? new Date(formData.date).toISOString().split('T')[0] : formData.date}
                         onChange={e => setFormData({...formData, date: e.target.value})}
                       />
                       <Calendar size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
@@ -501,13 +511,11 @@ export default function SupplierList() {
 
                 <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Avatar</label>
-                  <div 
-                    onClick={triggerFileInput}
+                  <label 
                     className="border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 group hover:border-brand-blue/50 transition-all cursor-pointer relative overflow-hidden bg-zinc-50/50 dark:bg-zinc-800/20" 
                     style={{ borderColor: 'var(--border-color)' }}
                   >
                     <input 
-                      ref={fileInputRef}
                       type="file" 
                       className="hidden" 
                       accept="image/*"
@@ -521,7 +529,13 @@ export default function SupplierList() {
                             <Upload size={24} className="text-white" />
                           </div>
                         </div>
-                        <button type="button" className="text-[10px] font-black uppercase tracking-widest text-brand-blue hover:underline">Change Image</button>
+                        <button 
+                          type="button" 
+                          onClick={removeAvatar}
+                          className="text-[10px] font-black uppercase tracking-widest text-rose-500 hover:underline"
+                        >
+                          Remove Image
+                        </button>
                       </div>
                     ) : (
                       <>
@@ -534,7 +548,7 @@ export default function SupplierList() {
                         </div>
                       </>
                     )}
-                  </div>
+                  </label>
                 </div>
               </div>
 
