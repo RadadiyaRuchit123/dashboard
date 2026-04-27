@@ -4,6 +4,8 @@ import {
   Edit2, Trash2, Eye, ChevronLeft, ChevronRight, X, 
   Upload, Calendar, Mail, Phone, Globe, Hash, Building2, User, AlertCircle
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { useTheme } from '../context/ThemeContext';
 
 const initialSuppliers = [
@@ -92,6 +94,47 @@ export default function SupplierList() {
     setEditingSupplier(null);
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    
+    // 1. Header
+    doc.setFontSize(22);
+    doc.setTextColor(97, 105, 255);
+    doc.text('Ment X - Supplier Directory', 14, 20);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+    doc.text(`Total Suppliers: ${filteredSuppliers.length}`, 14, 33);
+
+    // 2. Table
+    const tableColumn = ["Company", "Supplier", "Date", "Email", "Phone", "Country", "GST No"];
+    const tableRows = filteredSuppliers.map(s => [
+      s.company,
+      s.supplier,
+      s.date,
+      s.email,
+      s.phone,
+      s.country,
+      s.gst
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 40,
+      theme: 'grid',
+      headStyles: { fillColor: [97, 105, 255], textColor: 255, fontStyle: 'bold' },
+      styles: { fontSize: 7, cellPadding: 2 },
+      alternateRowStyles: { fillColor: [245, 247, 250] }
+    });
+
+    doc.save(`MentX_Suppliers_${new Date().getTime()}.pdf`);
+  };
+
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -145,10 +188,18 @@ export default function SupplierList() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Supplier List</h2>
         <div className="flex items-center gap-3 no-print-area">
-          <button className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
-            Export PDF
+          <button 
+            onClick={handleExportPDF}
+            className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" 
+            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+          >
+            <Download size={18} /> Export PDF
           </button>
-          <button className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+          <button 
+            onClick={handlePrint}
+            className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" 
+            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+          >
             <Printer size={18} /> Print
           </button>
           <button 
