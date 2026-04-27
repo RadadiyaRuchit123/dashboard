@@ -83,6 +83,8 @@ export default function SupplierList() {
     setEditingSupplier(null);
   };
 
+  const fileInputRef = React.useRef(null);
+
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -96,6 +98,12 @@ export default function SupplierList() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const triggerFileInput = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fileInputRef.current?.click();
   };
 
   const inputStyle = {
@@ -493,29 +501,40 @@ export default function SupplierList() {
 
                 <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Avatar</label>
-                  <label className="border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 group hover:border-brand-blue/50 transition-all cursor-pointer relative overflow-hidden" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-root)' }}>
+                  <div 
+                    onClick={triggerFileInput}
+                    className="border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 group hover:border-brand-blue/50 transition-all cursor-pointer relative overflow-hidden bg-zinc-50/50 dark:bg-zinc-800/20" 
+                    style={{ borderColor: 'var(--border-color)' }}
+                  >
                     <input 
+                      ref={fileInputRef}
                       type="file" 
                       className="hidden" 
                       accept="image/*"
                       onChange={handleAvatarChange}
                     />
                     {formData.avatarPreview ? (
-                      <div className="relative group">
-                        <img src={formData.avatarPreview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-brand-blue shadow-lg" />
-                        <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Upload size={20} className="text-white" />
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="relative group/preview">
+                          <img src={formData.avatarPreview} alt="Preview" className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-zinc-800 shadow-2xl" />
+                          <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover/preview:opacity-100 transition-opacity">
+                            <Upload size={24} className="text-white" />
+                          </div>
                         </div>
+                        <button type="button" className="text-[10px] font-black uppercase tracking-widest text-brand-blue hover:underline">Change Image</button>
                       </div>
                     ) : (
                       <>
-                        <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-all">
-                          <Upload size={20} strokeWidth={2.5} />
+                        <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-all">
+                          <Upload size={24} strokeWidth={2.5} />
                         </div>
-                        <p className="text-[10px] font-bold text-zinc-400">Click or drag to upload avatar</p>
+                        <div className="text-center">
+                          <p className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>Click to upload avatar</p>
+                          <p className="text-[10px] font-bold text-zinc-400 mt-1">PNG, JPG or SVG (max. 800x800px)</p>
+                        </div>
                       </>
                     )}
-                  </label>
+                  </div>
                 </div>
               </div>
 
