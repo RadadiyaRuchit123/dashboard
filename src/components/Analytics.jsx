@@ -140,7 +140,7 @@ const StatCard = ({ title, value, change, color, data, gradientId }) => (
 );
 
 export default function Analytics() {
-  const { isDark } = useTheme();
+  const { isDark, currency } = useTheme();
   const [activeDropdown, setActiveDropdown] = React.useState(null);
   const [filters, setFilters] = React.useState({
     global: 'This week',
@@ -199,8 +199,8 @@ export default function Analytics() {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard title="Total Amount" value="$90,584" change="+5.2%" color="green" data={statData} gradientId="gradAmount" />
-        <StatCard title="Total Revenue" value="$40,584" change="+2.5%" color="orange" data={revenueData} gradientId="gradRevenue" />
+        <StatCard title="Total Amount" value={`${currency}90,584`} change="+5.2%" color="green" data={statData} gradientId="gradAmount" />
+        <StatCard title="Total Revenue" value={`${currency}40,584`} change="+2.5%" color="orange" data={revenueData} gradientId="gradRevenue" />
         <StatCard title="Total Customer" value="20,584" change="-1.5%" color="red" data={customerData} gradientId="gradCustomer" />
       </div>
 
@@ -211,7 +211,7 @@ export default function Analytics() {
             <div className="space-y-1">
               <h3 className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>Product Sell / Purchase Return</h3>
               <div className="flex items-center gap-3">
-                <span className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>$90,584B</span>
+                <span className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>{currency}90,584B</span>
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-green-500/10 text-green-500 text-[10px] font-black">
                   <TrendingUp size={10} /> +2.7%
                 </span>

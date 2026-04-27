@@ -27,7 +27,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
     sku: editingProduct?.sku || '',
     stock: editingProduct?.stock || '',
     status: editingProduct?.status || 'In Stock',
-    salePriceRetail: editingProduct?.salePriceRetail || editingProduct?.price?.replace('₹', '') || '',
+    salePriceRetail: editingProduct?.salePriceRetail || editingProduct?.price?.replace(/[₹$€£¥]/g, '') || '',
     salePriceWholesale: editingProduct?.salePriceWholesale || '',
     cost: editingProduct?.cost || '',
     discountPercent: editingProduct?.discountPercent || '',

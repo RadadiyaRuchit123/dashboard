@@ -347,9 +347,18 @@ export default function CustomerList() {
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Total Spent</label>
-                    <div className="relative">
-                      <input type="text" placeholder="0.00" className="w-full px-6 py-4 pr-12 rounded-xl border font-bold text-sm" style={inputStyle} value={formData.spent} onChange={e => setFormData({...formData, spent: e.target.value})} />
-                      <DollarSign size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <div className="flex border rounded-xl overflow-hidden focus-within:border-brand-blue transition-all" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card-inner)' }}>
+                      <div className="px-5 py-4 border-r bg-zinc-50 dark:bg-zinc-800/40 font-black text-zinc-400">
+                        {currency}
+                      </div>
+                      <input 
+                        type="text" 
+                        placeholder="0.00" 
+                        className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm" 
+                        style={{ color: 'var(--text-primary)' }}
+                        value={formData.spent} 
+                        onChange={e => setFormData({...formData, spent: e.target.value})} 
+                      />
                     </div>
                   </div>
                 </div>
