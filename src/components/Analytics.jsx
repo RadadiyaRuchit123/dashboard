@@ -172,6 +172,7 @@ export default function Analytics() {
       ))}
     </div>
   );
+  return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Analytical</h2>
