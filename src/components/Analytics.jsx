@@ -1,11 +1,11 @@
-import React from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend, BarChart, Bar, LineChart, Line
 } from 'recharts';
 import { 
   TrendingUp, TrendingDown, Eye, ChevronDown, Calendar, 
-  Monitor, Smartphone, Tablet, MoreVertical, Search, Bell, ShoppingBag
+  Monitor, Smartphone, Tablet, MoreVertical, Search, Bell, ShoppingBag,
+  BarChart2, Activity, AreaChart as AreaIcon
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -142,6 +142,7 @@ const StatCard = ({ title, value, change, color, data, gradientId }) => (
 export default function Analytics() {
   const { isDark, currency } = useTheme();
   const [activeDropdown, setActiveDropdown] = React.useState(null);
+  const [chartType, setChartType] = React.useState('area'); // 'area', 'bar', 'line'
   const [filters, setFilters] = React.useState({
     global: 'This week',
     sellReturn: 'This Month',
@@ -217,7 +218,31 @@ export default function Analytics() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl border" style={{ borderColor: 'var(--border-color)' }}>
+                <button 
+                  onClick={() => setChartType('area')}
+                  className={`p-2 rounded-xl transition-all ${chartType === 'area' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
+                  title="Area Chart"
+                >
+                  <AreaIcon size={16} />
+                </button>
+                <button 
+                  onClick={() => setChartType('bar')}
+                  className={`p-2 rounded-xl transition-all ${chartType === 'bar' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
+                  title="Bar Chart"
+                >
+                  <BarChart2 size={16} />
+                </button>
+                <button 
+                  onClick={() => setChartType('line')}
+                  className={`p-2 rounded-xl transition-all ${chartType === 'line' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
+                  title="Line Chart"
+                >
+                  <Activity size={16} />
+                </button>
+              </div>
+              <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-orange-400" />
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Purchase Return</span>
@@ -250,52 +275,44 @@ export default function Analytics() {
 
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorSell" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorReturn" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
-                  interval={1}
-                />
-                <YAxis 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
-                  tickFormatter={(val) => `${val}K`}
-                />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
-                  itemStyle={{ padding: '2px 0' }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="sell" 
-                  stroke="#10B981" 
-                  strokeWidth={4} 
-                  fillOpacity={1} 
-                  fill="url(#colorSell)" 
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="return" 
-                  stroke="#F59E0B" 
-                  strokeWidth={4} 
-                  fillOpacity={1} 
-                  fill="url(#colorReturn)" 
-                />
-              </AreaChart>
+              {chartType === 'bar' ? (
+                <BarChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
+                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
+                  <Bar dataKey="sell" fill="#10B981" radius={[4, 4, 0, 0]} barSize={20} />
+                  <Bar dataKey="return" fill="#F59E0B" radius={[4, 4, 0, 0]} barSize={20} />
+                </BarChart>
+              ) : chartType === 'line' ? (
+                <LineChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
+                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
+                  <Line type="monotone" dataKey="sell" stroke="#10B981" strokeWidth={4} dot={{ r: 4, fill: '#10B981', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                  <Line type="monotone" dataKey="return" stroke="#F59E0B" strokeWidth={4} dot={{ r: 4, fill: '#F59E0B', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
+                </LineChart>
+              ) : (
+                <AreaChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorSell" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorReturn" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} interval={1} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
+                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
+                  <Area type="monotone" dataKey="sell" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorSell)" />
+                  <Area type="monotone" dataKey="return" stroke="#F59E0B" strokeWidth={4} fillOpacity={1} fill="url(#colorReturn)" />
+                </AreaChart>
+              )}
             </ResponsiveContainer>
           </div>
         </div>
