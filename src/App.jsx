@@ -9,6 +9,7 @@ import ProductList from './components/ProductList';
 import AddProduct from './components/AddProduct';
 import OrderList from './components/OrderList';
 import SupplierList from './components/SupplierList';
+import CustomerList from './components/CustomerList';
 import { MoreVertical } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
@@ -238,6 +239,8 @@ function MainLayout() {
             }} />
            ) : activeItem === 'People' && activeSubItem === 'Supplier List' ? (
             <SupplierList />
+           ) : activeItem === 'People' && activeSubItem === 'Customer List' ? (
+            <CustomerList />
            ) : (
             <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
               <div className="p-4 rounded-full bg-brand-blue/10 text-brand-blue">
