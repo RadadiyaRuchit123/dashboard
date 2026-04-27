@@ -141,15 +141,58 @@ const StatCard = ({ title, value, change, color, data, gradientId }) => (
 
 export default function Analytics() {
   const { isDark } = useTheme();
+  const [activeDropdown, setActiveDropdown] = React.useState(null);
+  const [filters, setFilters] = React.useState({
+    global: 'This week',
+    sellReturn: 'This Month',
+    topCustomer: 'This week',
+    device: 'This Month'
+  });
 
-  return (
+  const toggleDropdown = (id) => {
+    setActiveDropdown(activeDropdown === id ? null : id);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+    setActiveDropdown(null);
+  };
+
+  const Dropdown = ({ id, current, options, onSelect }) => (
+    <div className="absolute top-full mt-2 right-0 w-40 bg-white dark:bg-zinc-900 border rounded-2xl shadow-2xl z-[100] py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200" style={{ borderColor: 'var(--border-color)' }}>
+      {options.map(opt => (
+        <button 
+          key={opt}
+          onClick={() => onSelect(opt)}
+          className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-colors ${current === opt ? 'bg-brand-blue text-white' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800'}`}
+          style={{ color: current === opt ? '#fff' : 'var(--text-primary)' }}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Analytical</h2>
-        <div className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-white dark:bg-zinc-900 shadow-sm cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
-          <Calendar size={16} className="text-zinc-400" />
-          <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>This week</span>
-          <ChevronDown size={14} className="text-zinc-400" />
+        <div className="relative">
+          <div 
+            onClick={() => toggleDropdown('global')}
+            className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-white dark:bg-zinc-900 shadow-sm cursor-pointer hover:bg-zinc-50 transition-all" 
+            style={{ borderColor: 'var(--border-color)' }}
+          >
+            <Calendar size={16} className="text-zinc-400" />
+            <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{filters.global}</span>
+            <ChevronDown size={14} className={`text-zinc-400 transition-transform ${activeDropdown === 'global' ? 'rotate-180' : ''}`} />
+          </div>
+          {activeDropdown === 'global' && (
+            <Dropdown 
+              id="global" 
+              current={filters.global} 
+              options={['Today', 'This week', 'This Month', 'This Year']} 
+              onSelect={(val) => handleFilterChange('global', val)} 
+            />
+          )}
         </div>
       </div>
 
@@ -182,10 +225,24 @@ export default function Analytics() {
                 <div className="w-3 h-3 rounded-full bg-emerald-400" />
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Product Seal</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer ml-4" style={{ borderColor: 'var(--border-color)' }}>
-                <Calendar size={14} className="text-zinc-400" />
-                <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>This Month</span>
-                <ChevronDown size={12} className="text-zinc-400" />
+              <div className="relative ml-4">
+                <div 
+                  onClick={() => toggleDropdown('sellReturn')}
+                  className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                  style={{ borderColor: 'var(--border-color)' }}
+                >
+                  <Calendar size={14} className="text-zinc-400" />
+                  <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>{filters.sellReturn}</span>
+                  <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'sellReturn' ? 'rotate-180' : ''}`} />
+                </div>
+                {activeDropdown === 'sellReturn' && (
+                  <Dropdown 
+                    id="sellReturn" 
+                    current={filters.sellReturn} 
+                    options={['Last 7 Days', 'This Month', 'Last Month', 'Custom Range']} 
+                    onSelect={(val) => handleFilterChange('sellReturn', val)} 
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -246,10 +303,24 @@ export default function Analytics() {
         <div className="xl:col-span-1 premium-card rounded-[32px] p-8 flex flex-col" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>Top Customer</h3>
-            <div className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
-              <Calendar size={14} className="text-zinc-400" />
-              <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>This week</span>
-              <ChevronDown size={12} className="text-zinc-400" />
+            <div className="relative">
+              <div 
+                onClick={() => toggleDropdown('topCustomer')}
+                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                style={{ borderColor: 'var(--border-color)' }}
+              >
+                <Calendar size={14} className="text-zinc-400" />
+                <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>{filters.topCustomer}</span>
+                <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'topCustomer' ? 'rotate-180' : ''}`} />
+              </div>
+              {activeDropdown === 'topCustomer' && (
+                <Dropdown 
+                  id="topCustomer" 
+                  current={filters.topCustomer} 
+                  options={['Today', 'This week', 'This Month']} 
+                  onSelect={(val) => handleFilterChange('topCustomer', val)} 
+                />
+              )}
             </div>
           </div>
 
@@ -290,10 +361,24 @@ export default function Analytics() {
         <div className="xl:col-span-3 premium-card rounded-[32px] p-8" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>User Base by Device Preferences</h3>
-            <div className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
-              <Calendar size={14} className="text-zinc-400" />
-              <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>This Month</span>
-              <ChevronDown size={12} className="text-zinc-400" />
+            <div className="relative">
+              <div 
+                onClick={() => toggleDropdown('device')}
+                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                style={{ borderColor: 'var(--border-color)' }}
+              >
+                <Calendar size={14} className="text-zinc-400" />
+                <span className="text-[10px] font-black" style={{ color: 'var(--text-primary)' }}>{filters.device}</span>
+                <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'device' ? 'rotate-180' : ''}`} />
+              </div>
+              {activeDropdown === 'device' && (
+                <Dropdown 
+                  id="device" 
+                  current={filters.device} 
+                  options={['Today', 'This Month', 'Last 3 Months']} 
+                  onSelect={(val) => handleFilterChange('device', val)} 
+                />
+              )}
             </div>
           </div>
 
