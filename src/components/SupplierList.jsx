@@ -25,7 +25,8 @@ export default function SupplierList() {
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [viewingSupplier, setViewingSupplier] = useState(null);
-  const [currentPage, setCurrentPage] = useState(2); 
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage = 5;
   
   const [formData, setFormData] = useState({
     company: '',
@@ -35,7 +36,8 @@ export default function SupplierList() {
     phone: '',
     country: 'USA',
     gst: '',
-    avatar: null
+    avatar: null,
+    avatarPreview: null
   });
 
   const handleEdit = (supplier) => {
@@ -48,7 +50,8 @@ export default function SupplierList() {
       phone: supplier.phone,
       country: supplier.country,
       gst: supplier.gst,
-      avatar: supplier.avatar
+      avatar: supplier.avatar,
+      avatarPreview: supplier.avatar
     });
     setIsModalOpen(true);
   };
@@ -80,6 +83,21 @@ export default function SupplierList() {
     setEditingSupplier(null);
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          avatar: reader.result,
+          avatarPreview: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const inputStyle = {
     backgroundColor: 'var(--bg-card-inner)',
     borderColor: 'var(--border-color)',
@@ -91,6 +109,16 @@ export default function SupplierList() {
     s.supplier.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredSuppliers.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredSuppliers.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="flex flex-col space-y-6 animate-in fade-in duration-500 pb-10">
@@ -107,7 +135,7 @@ export default function SupplierList() {
           <button 
             onClick={() => {
               setEditingSupplier(null);
-              setFormData({ company: '', supplier: '', date: '08 Jun 2023', email: '', phone: '', country: 'USA', gst: '', avatar: null });
+              setFormData({ company: '', supplier: '', date: '08 Jun 2023', email: '', phone: '', country: 'USA', gst: '', avatar: null, avatarPreview: null });
               setIsModalOpen(true);
             }}
             className="flex items-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-xl font-black text-sm shadow-xl shadow-brand-blue/20 hover:scale-[1.02] active:scale-[0.98] transition-all btn-glow"
@@ -130,7 +158,7 @@ export default function SupplierList() {
             className="w-full pl-12 pr-4 py-2.5 border rounded-xl focus:outline-none focus:border-brand-blue transition-all font-bold text-sm bg-white dark:bg-zinc-900 shadow-sm" 
             style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
@@ -152,7 +180,7 @@ export default function SupplierList() {
               </tr>
             </thead>
             <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
-              {filteredSuppliers.map((s, idx) => (
+              {currentItems.map((s, idx) => (
                 <tr key={idx} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-3">
@@ -190,18 +218,45 @@ export default function SupplierList() {
 
         {/* Pagination matches image style */}
         <div className="p-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: 'var(--border-color)' }}>
-          <p className="text-xs font-bold text-zinc-400">Showing 1 to 10 of 50 entries</p>
+          <p className="text-xs font-bold text-zinc-400">Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredSuppliers.length)} of {filteredSuppliers.length} entries</p>
           <div className="flex items-center gap-1.5">
-            <button className="p-2 rounded-lg border hover:bg-zinc-50 transition-all opacity-40" style={{ borderColor: 'var(--border-color)' }}><ChevronLeft size={16} /></button>
-            {[1, 2, 3, 4, 5].map(p => (
-              <button key={p} className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${currentPage === p ? 'bg-brand-blue text-white shadow-lg' : 'hover:bg-zinc-50 border text-zinc-400'}`} style={{ borderColor: currentPage === p ? 'transparent' : 'var(--border-color)' }}>
+            <button 
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg border hover:bg-zinc-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed" 
+              style={{ borderColor: 'var(--border-color)' }}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <button 
+                key={p} 
+                onClick={() => setCurrentPage(p)}
+                className={`w-8 h-8 rounded-lg text-xs font-black transition-all ${currentPage === p ? 'bg-brand-blue text-white shadow-lg' : 'hover:bg-zinc-50 border text-zinc-400'}`} 
+                style={{ borderColor: currentPage === p ? 'transparent' : 'var(--border-color)' }}
+              >
                 {p}
               </button>
             ))}
-            <button className="p-2 rounded-lg border hover:bg-zinc-50 transition-all" style={{ borderColor: 'var(--border-color)' }}><ChevronRight size={16} /></button>
+            <button 
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg border hover:bg-zinc-50 transition-all disabled:opacity-20 disabled:cursor-not-allowed" 
+              style={{ borderColor: 'var(--border-color)' }}
+            >
+              <ChevronRight size={16} />
+            </button>
             <div className="flex items-center gap-2 ml-4">
               <span className="text-xs font-bold text-zinc-400">Go to</span>
-              <input type="text" className="w-10 h-8 border rounded-lg text-xs font-black text-center focus:outline-none focus:border-brand-blue transition-all" style={inputStyle} />
+              <input 
+                type="text" 
+                className="w-10 h-8 border rounded-lg text-xs font-black text-center focus:outline-none focus:border-brand-blue transition-all" 
+                style={inputStyle} 
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (val >= 1 && val <= totalPages) setCurrentPage(val);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -438,12 +493,29 @@ export default function SupplierList() {
 
                 <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Avatar</label>
-                  <div className="border-2 border-dashed rounded-[24px] p-10 flex flex-col items-center justify-center gap-4 group hover:border-brand-blue/50 transition-all cursor-pointer" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-root)' }}>
-                    <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-all">
-                      <Upload size={24} strokeWidth={2.5} />
-                    </div>
-                    <p className="text-xs font-bold text-zinc-400">Drag and drop a file to upload</p>
-                  </div>
+                  <label className="border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 group hover:border-brand-blue/50 transition-all cursor-pointer relative overflow-hidden" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-root)' }}>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                    />
+                    {formData.avatarPreview ? (
+                      <div className="relative group">
+                        <img src={formData.avatarPreview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-brand-blue shadow-lg" />
+                        <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Upload size={20} className="text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-all">
+                          <Upload size={20} strokeWidth={2.5} />
+                        </div>
+                        <p className="text-[10px] font-bold text-zinc-400">Click or drag to upload avatar</p>
+                      </>
+                    )}
+                  </label>
                 </div>
               </div>
 
