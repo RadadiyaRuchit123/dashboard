@@ -486,12 +486,11 @@ export default function SupplierList() {
                     <div className="relative">
                       <input 
                         type="date" 
-                        className="w-full pl-14 pr-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" 
+                        className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" 
                         style={inputStyle}
                         value={formData.date.includes(' ') ? new Date(formData.date).toISOString().split('T')[0] : formData.date}
                         onChange={e => setFormData({...formData, date: e.target.value})}
                       />
-                      <Calendar size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     </div>
                   </div>
                 </div>

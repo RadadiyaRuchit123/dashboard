@@ -315,8 +315,7 @@ export default function CustomerList() {
                   <div className="space-y-3">
                     <label className="text-xs font-black text-zinc-400 uppercase tracking-widest">Join Date</label>
                     <div className="relative">
-                      <input type="date" className="w-full px-6 py-4 pr-12 rounded-xl border font-bold text-sm" style={inputStyle} value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
-                      <Calendar size={18} className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                      <input type="date" className="w-full px-6 py-4 rounded-xl border font-bold text-sm" style={inputStyle} value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
                     </div>
                   </div>
                 </div>
