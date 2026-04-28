@@ -11,6 +11,7 @@ import OrderList from './components/OrderList';
 import SupplierList from './components/SupplierList';
 import CustomerList from './components/CustomerList';
 import Analytics from './components/Analytics';
+import Invoice from './components/Invoice';
 import { MoreVertical } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
@@ -244,6 +245,8 @@ function MainLayout() {
             <CustomerList />
            ) : activeItem === 'Analytics' ? (
             <Analytics />
+           ) : activeItem === 'Invoice' ? (
+            <Invoice />
            ) : (
             <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
               <div className="p-4 rounded-full bg-brand-blue/10 text-brand-blue">

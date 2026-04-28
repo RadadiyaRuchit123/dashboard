@@ -1,11 +1,11 @@
-import { 
+import React from 'react';
+import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, BarChart, Bar, LineChart, Line
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { 
-  TrendingUp, TrendingDown, Eye, ChevronDown, Calendar, 
-  Monitor, Smartphone, Tablet, MoreVertical, Search, Bell, ShoppingBag,
-  BarChart2, Activity, AreaChart as AreaIcon
+import {
+  TrendingUp, TrendingDown, Eye, ChevronDown, Calendar,
+  Monitor, Smartphone, Tablet, MoreVertical, Search, Bell, ShoppingBag
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -105,28 +105,28 @@ const StatCard = ({ title, value, change, color, data, gradientId }) => (
         {change}
       </div>
     </div>
-    
+
     <div className="h-24 w-full mt-2">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data}>
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'} stopOpacity={0.3}/>
-              <stop offset="95%" stopColor={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'} stopOpacity={0}/>
+              <stop offset="5%" stopColor={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <Area 
-            type="monotone" 
-            dataKey="value" 
-            stroke={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'} 
-            strokeWidth={3} 
-            fillOpacity={1} 
-            fill={`url(#${gradientId})`} 
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke={color === 'green' ? '#10B981' : color === 'orange' ? '#F59E0B' : '#F43F5E'}
+            strokeWidth={3}
+            fillOpacity={1}
+            fill={`url(#${gradientId})`}
           />
         </AreaChart>
       </ResponsiveContainer>
     </div>
-    
+
     <div className="flex justify-between text-[10px] font-black text-zinc-400 mt-2">
       <span>Sat</span>
       <span>Sun</span>
@@ -142,7 +142,6 @@ const StatCard = ({ title, value, change, color, data, gradientId }) => (
 export default function Analytics() {
   const { isDark, currency } = useTheme();
   const [activeDropdown, setActiveDropdown] = React.useState(null);
-  const [chartType, setChartType] = React.useState('area'); // 'area', 'bar', 'line'
   const [filters, setFilters] = React.useState({
     global: 'This week',
     sellReturn: 'This Month',
@@ -162,7 +161,7 @@ export default function Analytics() {
   const Dropdown = ({ id, current, options, onSelect }) => (
     <div className="absolute top-full mt-2 right-0 w-40 bg-white dark:bg-zinc-900 border rounded-2xl shadow-2xl z-[100] py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200" style={{ borderColor: 'var(--border-color)' }}>
       {options.map(opt => (
-        <button 
+        <button
           key={opt}
           onClick={() => onSelect(opt)}
           className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-colors ${current === opt ? 'bg-brand-blue text-white' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800'}`}
@@ -178,9 +177,9 @@ export default function Analytics() {
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Analytical</h2>
         <div className="relative">
-          <div 
+          <div
             onClick={() => toggleDropdown('global')}
-            className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-white dark:bg-zinc-900 shadow-sm cursor-pointer hover:bg-zinc-50 transition-all" 
+            className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-white dark:bg-zinc-900 shadow-sm cursor-pointer hover:bg-zinc-50 transition-all"
             style={{ borderColor: 'var(--border-color)' }}
           >
             <Calendar size={16} className="text-zinc-400" />
@@ -188,11 +187,11 @@ export default function Analytics() {
             <ChevronDown size={14} className={`text-zinc-400 transition-transform ${activeDropdown === 'global' ? 'rotate-180' : ''}`} />
           </div>
           {activeDropdown === 'global' && (
-            <Dropdown 
-              id="global" 
-              current={filters.global} 
-              options={['Today', 'This week', 'This Month', 'This Year']} 
-              onSelect={(val) => handleFilterChange('global', val)} 
+            <Dropdown
+              id="global"
+              current={filters.global}
+              options={['Today', 'This week', 'This Month', 'This Year']}
+              onSelect={(val) => handleFilterChange('global', val)}
             />
           )}
         </div>
@@ -218,31 +217,7 @@ export default function Analytics() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-2xl border" style={{ borderColor: 'var(--border-color)' }}>
-                <button 
-                  onClick={() => setChartType('area')}
-                  className={`p-2 rounded-xl transition-all ${chartType === 'area' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
-                  title="Area Chart"
-                >
-                  <AreaIcon size={16} />
-                </button>
-                <button 
-                  onClick={() => setChartType('bar')}
-                  className={`p-2 rounded-xl transition-all ${chartType === 'bar' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
-                  title="Bar Chart"
-                >
-                  <BarChart2 size={16} />
-                </button>
-                <button 
-                  onClick={() => setChartType('line')}
-                  className={`p-2 rounded-xl transition-all ${chartType === 'line' ? 'bg-brand-blue text-white shadow-lg' : 'text-zinc-400'}`}
-                  title="Line Chart"
-                >
-                  <Activity size={16} />
-                </button>
-              </div>
-              <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-orange-400" />
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Purchase Return</span>
@@ -252,9 +227,9 @@ export default function Analytics() {
                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Product Seal</span>
               </div>
               <div className="relative ml-4">
-                <div 
+                <div
                   onClick={() => toggleDropdown('sellReturn')}
-                  className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                  className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all"
                   style={{ borderColor: 'var(--border-color)' }}
                 >
                   <Calendar size={14} className="text-zinc-400" />
@@ -262,11 +237,11 @@ export default function Analytics() {
                   <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'sellReturn' ? 'rotate-180' : ''}`} />
                 </div>
                 {activeDropdown === 'sellReturn' && (
-                  <Dropdown 
-                    id="sellReturn" 
-                    current={filters.sellReturn} 
-                    options={['Last 7 Days', 'This Month', 'Last Month', 'Custom Range']} 
-                    onSelect={(val) => handleFilterChange('sellReturn', val)} 
+                  <Dropdown
+                    id="sellReturn"
+                    current={filters.sellReturn}
+                    options={['Last 7 Days', 'This Month', 'Last Month', 'Custom Range']}
+                    onSelect={(val) => handleFilterChange('sellReturn', val)}
                   />
                 )}
               </div>
@@ -275,44 +250,52 @@ export default function Analytics() {
 
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              {chartType === 'bar' ? (
-                <BarChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
-                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
-                  <Bar dataKey="sell" fill="#10B981" radius={[4, 4, 0, 0]} barSize={20} />
-                  <Bar dataKey="return" fill="#F59E0B" radius={[4, 4, 0, 0]} barSize={20} />
-                </BarChart>
-              ) : chartType === 'line' ? (
-                <LineChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
-                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
-                  <Line type="monotone" dataKey="sell" stroke="#10B981" strokeWidth={4} dot={{ r: 4, fill: '#10B981', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
-                  <Line type="monotone" dataKey="return" stroke="#F59E0B" strokeWidth={4} dot={{ r: 4, fill: '#F59E0B', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, strokeWidth: 0 }} />
-                </LineChart>
-              ) : (
-                <AreaChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorSell" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
-                    </linearGradient>
-                    <linearGradient id="colorReturn" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} interval={1} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(val) => `${val}K`} />
-                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }} />
-                  <Area type="monotone" dataKey="sell" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorSell)" />
-                  <Area type="monotone" dataKey="return" stroke="#F59E0B" strokeWidth={4} fillOpacity={1} fill="url(#colorReturn)" />
-                </AreaChart>
-              )}
+              <AreaChart data={sellReturnData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorSell" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorReturn" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
+                  interval={1}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
+                  tickFormatter={(val) => `${val}K`}
+                />
+                <Tooltip
+                  contentStyle={{ backgroundColor: isDark ? '#0f172a' : '#fff', border: 'none', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
+                  itemStyle={{ padding: '2px 0' }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="sell"
+                  stroke="#10B981"
+                  strokeWidth={4}
+                  fillOpacity={1}
+                  fill="url(#colorSell)"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="return"
+                  stroke="#F59E0B"
+                  strokeWidth={4}
+                  fillOpacity={1}
+                  fill="url(#colorReturn)"
+                />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -322,9 +305,9 @@ export default function Analytics() {
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>Top Customer</h3>
             <div className="relative">
-              <div 
+              <div
                 onClick={() => toggleDropdown('topCustomer')}
-                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all"
                 style={{ borderColor: 'var(--border-color)' }}
               >
                 <Calendar size={14} className="text-zinc-400" />
@@ -332,11 +315,11 @@ export default function Analytics() {
                 <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'topCustomer' ? 'rotate-180' : ''}`} />
               </div>
               {activeDropdown === 'topCustomer' && (
-                <Dropdown 
-                  id="topCustomer" 
-                  current={filters.topCustomer} 
-                  options={['Today', 'This week', 'This Month']} 
-                  onSelect={(val) => handleFilterChange('topCustomer', val)} 
+                <Dropdown
+                  id="topCustomer"
+                  current={filters.topCustomer}
+                  options={['Today', 'This week', 'This Month']}
+                  onSelect={(val) => handleFilterChange('topCustomer', val)}
                 />
               )}
             </div>
@@ -380,9 +363,9 @@ export default function Analytics() {
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-lg font-black" style={{ color: 'var(--text-primary)' }}>User Base by Device Preferences</h3>
             <div className="relative">
-              <div 
+              <div
                 onClick={() => toggleDropdown('device')}
-                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all" 
+                className="flex items-center gap-2 px-4 py-2 border rounded-xl bg-zinc-50 dark:bg-zinc-800 shadow-sm cursor-pointer hover:bg-zinc-100 transition-all"
                 style={{ borderColor: 'var(--border-color)' }}
               >
                 <Calendar size={14} className="text-zinc-400" />
@@ -390,11 +373,11 @@ export default function Analytics() {
                 <ChevronDown size={12} className={`text-zinc-400 transition-transform ${activeDropdown === 'device' ? 'rotate-180' : ''}`} />
               </div>
               {activeDropdown === 'device' && (
-                <Dropdown 
-                  id="device" 
-                  current={filters.device} 
-                  options={['Today', 'This Month', 'Last 3 Months']} 
-                  onSelect={(val) => handleFilterChange('device', val)} 
+                <Dropdown
+                  id="device"
+                  current={filters.device}
+                  options={['Today', 'This Month', 'Last 3 Months']}
+                  onSelect={(val) => handleFilterChange('device', val)}
                 />
               )}
             </div>
