@@ -10,15 +10,15 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
   const [availableSizes, setAvailableSizes] = useState(['XL', 'L', 'M', 'S']);
   const [availableBrands, setAvailableBrands] = useState(['ZARA', 'Nike', 'Adidas']);
   const { currency } = useTheme();
-  
+
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
-  
+
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newSizeName, setNewSizeName] = useState('');
   const [newBrandName, setNewBrandName] = useState('');
-  
+
   const [formData, setFormData] = useState({
     id: editingProduct?.id || null,
     name: editingProduct?.name || '',
@@ -40,7 +40,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     const newImage = URL.createObjectURL(files[0]);
-    
+
     setImages(prev => {
       const updated = [...prev];
       updated[index] = newImage;
@@ -58,16 +58,17 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
 
   const handleAddCategory = () => {
     if (newCategoryName.trim() && !availableCategories.includes(newCategoryName.trim())) {
-      setAvailableCategories(prev => [...prev, newCategoryName.trim()]);
+      const name = newCategoryName.trim();
+      setAvailableCategories(prev => [...prev, name]);
+      setFormData(prev => ({ ...prev, category: name.toLowerCase() })); // Auto-select new category
       setNewCategoryName('');
-      // We don't close the modal immediately to allow adding multiple or managing existing ones
     }
   };
 
   const removeCategory = (catToRemove) => {
     setAvailableCategories(prev => prev.filter(cat => cat !== catToRemove));
     if (formData.category === catToRemove.toLowerCase()) {
-      setFormData({...formData, category: ''});
+      setFormData({ ...formData, category: '' });
     }
   };
 
@@ -81,7 +82,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
   const removeSize = (sizeToRemove) => {
     setAvailableSizes(prev => prev.filter(s => s !== sizeToRemove));
     if (formData.size === sizeToRemove) {
-      setFormData({...formData, size: ''});
+      setFormData({ ...formData, size: '' });
     }
   };
 
@@ -95,7 +96,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
   const removeBrand = (brandToRemove) => {
     setAvailableBrands(prev => prev.filter(b => b !== brandToRemove));
     if (formData.brand === brandToRemove) {
-      setFormData({...formData, brand: ''});
+      setFormData({ ...formData, brand: '' });
     }
   };
 
@@ -120,10 +121,9 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
   };
 
   const StepCard = ({ number, title, active }) => (
-    <div 
-      className={`flex-1 p-4 md:p-6 rounded-[20px] border-2 transition-all cursor-pointer ${
-        active ? 'border-brand-blue bg-white dark:bg-zinc-800 shadow-lg shadow-brand-blue/5' : 'border-transparent '
-      }`}
+    <div
+      className={`flex-1 p-4 md:p-6 rounded-[20px] border-2 transition-all cursor-pointer ${active ? 'border-brand-blue bg-white dark:bg-zinc-800 shadow-lg shadow-brand-blue/5' : 'border-transparent '
+        }`}
       onClick={() => setActiveStep(number)}
     >
       <p className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-1 ${active ? 'text-brand-blue' : 'text-zinc-400'}`}>
@@ -137,9 +137,8 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
 
   const CustomDropzone = ({ index, isLarge = false }) => (
     <div className={`relative group ${isLarge ? 'h-64 md:h-80 w-full mb-6' : 'aspect-square'}`}>
-      <label className={`w-full h-full border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden ${
-        images[index] ? 'border-solid' : 'hover:bg-brand-blue/5'
-      }`} style={{ borderColor: images[index] ? 'var(--border-color)' : 'var(--border-color)' }}>
+      <label className={`w-full h-full border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden ${images[index] ? 'border-solid' : 'hover:bg-brand-blue/5'
+        }`} style={{ borderColor: images[index] ? 'var(--border-color)' : 'var(--border-color)' }}>
         {images[index] ? (
           <img src={images[index]} alt="Product" className="w-full h-full object-cover" />
         ) : (
@@ -157,8 +156,8 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
         <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, index)} accept="image/*" />
       </label>
       {images[index] && (
-        <button 
-          onClick={() => removeImage(index)} 
+        <button
+          onClick={() => removeImage(index)}
           className="absolute top-4 right-4 p-2 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-lg"
         >
           <X size={14} strokeWidth={3} />
@@ -171,22 +170,62 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
     if (activeStep === 1) return (
       <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
         <div className="space-y-4">
-          <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Product Name</label>
-          <input type="text" placeholder="e.g. KNIT SWEATER WITH POCKETS" className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" style={inputStyle} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+          <label className="text-sm font-black mb-2" style={{ color: 'var(--text-primary)' }}>Product Name</label>
+          <input type="text" placeholder="e.g. KNIT SWEATER WITH POCKETS" className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" style={inputStyle} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Stock Quantity</label>
+            <input
+              type="number"
+              placeholder="e.g. 150"
+              className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm"
+              style={inputStyle}
+              value={formData.stock}
+              onChange={(e) => {
+                const stockVal = parseInt(e.target.value) || 0;
+                let autoStatus = 'In Stock';
+                if (stockVal === 0) autoStatus = 'Out of Stock';
+                else if (stockVal <= 10) autoStatus = 'Low Stock';
+
+                setFormData({
+                  ...formData,
+                  stock: stockVal,
+                  status: autoStatus
+                });
+              }}
+            />
+          </div>
+          <div className="space-y-4">
+            <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Manual Status</label>
+            <div className="relative">
+              <select
+                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all appearance-none font-bold text-sm cursor-pointer"
+                style={inputStyle}
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              >
+                <option value="In Stock">In Stock</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+              <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" size={18} />
+            </div>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Product Category</label>
             <div className="relative">
-              <select 
-                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all appearance-none font-bold text-sm cursor-pointer" 
-                style={inputStyle} 
-                value={formData.category} 
+              <select
+                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all appearance-none font-bold text-sm cursor-pointer"
+                style={inputStyle}
+                value={formData.category}
                 onChange={(e) => {
                   if (e.target.value === 'ADD_NEW') {
                     setIsCategoryModalOpen(true);
                   } else {
-                    setFormData({...formData, category: e.target.value});
+                    setFormData({ ...formData, category: e.target.value });
                   }
                 }}
               >
@@ -201,12 +240,12 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
           </div>
           <div className="space-y-4">
             <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Product SKU</label>
-            <input type="text" placeholder="e.g. BBS-SID-24" className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" style={inputStyle} value={formData.sku} onChange={(e) => setFormData({...formData, sku: e.target.value})} />
+            <input type="text" placeholder="e.g. BBS-SID-24" className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm" style={inputStyle} value={formData.sku} onChange={(e) => setFormData({ ...formData, sku: e.target.value })} />
           </div>
         </div>
         <div className="space-y-4">
           <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Description</label>
-          <textarea rows="8" placeholder="Type your product description here..." className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm resize-none" style={inputStyle} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
+          <textarea rows="8" placeholder="Type your product description here..." className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all font-bold text-sm resize-none" style={inputStyle} value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
         </div>
       </div>
     );
@@ -217,13 +256,13 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
           <div className="space-y-4">
             <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Size</label>
             <div className="relative">
-              <select 
-                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  appearance-none font-bold text-sm cursor-pointer" 
+              <select
+                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  appearance-none font-bold text-sm cursor-pointer"
                 style={inputStyle}
                 value={formData.size}
                 onChange={(e) => {
                   if (e.target.value === 'ADD_NEW') setIsSizeModalOpen(true);
-                  else setFormData({...formData, size: e.target.value});
+                  else setFormData({ ...formData, size: e.target.value });
                 }}
               >
                 <option value="">Select Size</option>
@@ -236,13 +275,13 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
           <div className="space-y-4">
             <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Brands</label>
             <div className="relative">
-              <select 
-                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  appearance-none font-bold text-sm cursor-pointer" 
+              <select
+                className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  appearance-none font-bold text-sm cursor-pointer"
                 style={inputStyle}
                 value={formData.brand}
                 onChange={(e) => {
                   if (e.target.value === 'ADD_NEW') setIsBrandModalOpen(true);
-                  else setFormData({...formData, brand: e.target.value});
+                  else setFormData({ ...formData, brand: e.target.value });
                 }}
               >
                 <option value="">Select Brand</option>
@@ -267,23 +306,23 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
             <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Color</label>
             <div className="relative flex gap-2">
               <div className="relative flex-1">
-                <input 
-                  type="text" 
-                  placeholder="Camel" 
-                  className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  font-bold text-sm uppercase" 
-                  style={inputStyle} 
+                <input
+                  type="text"
+                  placeholder="Camel"
+                  className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  font-bold text-sm uppercase"
+                  style={inputStyle}
                   value={formData.color}
-                  onChange={(e) => setFormData({...formData, color: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                 />
                 <Tag size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-400" />
               </div>
               <div className="relative group">
-                <input 
-                  type="color" 
-                  className="w-14 h-full rounded-xl border cursor-pointer p-1 " 
+                <input
+                  type="color"
+                  className="w-14 h-full rounded-xl border cursor-pointer p-1 "
                   style={inputStyle}
                   value={formData.color}
-                  onChange={(e) => setFormData({...formData, color: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                 />
               </div>
             </div>
@@ -300,13 +339,13 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
             <div className="px-5 py-4 border-r bg-zinc-50 dark:bg-zinc-800/40 font-black text-zinc-400">
               {currency}
             </div>
-            <input 
-              type="number" 
-              placeholder="220.41" 
-              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm" 
+            <input
+              type="number"
+              placeholder="220.41"
+              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm"
               style={{ color: 'var(--text-primary)' }}
               value={formData.salePriceRetail}
-              onChange={(e) => setFormData({...formData, salePriceRetail: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, salePriceRetail: e.target.value })}
             />
           </div>
         </div>
@@ -317,13 +356,13 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
             <div className="px-5 py-4 border-r bg-zinc-50 dark:bg-zinc-800/40 font-black text-zinc-400">
               {currency}
             </div>
-            <input 
-              type="number" 
-              placeholder="230.54" 
-              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm" 
+            <input
+              type="number"
+              placeholder="230.54"
+              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm"
               style={{ color: 'var(--text-primary)' }}
               value={formData.salePriceWholesale}
-              onChange={(e) => setFormData({...formData, salePriceWholesale: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, salePriceWholesale: e.target.value })}
             />
           </div>
         </div>
@@ -334,26 +373,26 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
             <div className="px-5 py-4 border-r bg-zinc-50 dark:bg-zinc-800/40 font-black text-zinc-400">
               {currency}
             </div>
-            <input 
-              type="number" 
-              placeholder="210.99" 
-              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm" 
+            <input
+              type="number"
+              placeholder="210.99"
+              className="flex-1 px-6 py-4 bg-transparent focus:outline-none font-bold text-sm"
               style={{ color: 'var(--text-primary)' }}
               value={formData.cost}
-              onChange={(e) => setFormData({...formData, cost: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
             />
           </div>
         </div>
 
         <div className="space-y-4">
           <label className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Discount Price %</label>
-          <input 
-            type="text" 
-            placeholder="Enter Discount price" 
-            className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  font-bold text-sm" 
+          <input
+            type="text"
+            placeholder="Enter Discount price"
+            className="w-full px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue transition-all  font-bold text-sm"
             style={inputStyle}
             value={formData.discountPercent}
-            onChange={(e) => setFormData({...formData, discountPercent: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, discountPercent: e.target.value })}
           />
         </div>
       </div>
@@ -378,17 +417,17 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
               <div className="space-y-3">
                 <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Add New Category</label>
                 <div className="flex gap-2">
-                  <input 
+                  <input
                     autoFocus
-                    type="text" 
-                    placeholder="e.g. Kids Fashion" 
-                    className="flex-1 px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue bg-zinc-50 dark:bg-zinc-800/40 font-bold text-sm" 
+                    type="text"
+                    placeholder="e.g. Kids Fashion"
+                    className="flex-1 px-6 py-4 rounded-xl border focus:outline-none focus:border-brand-blue bg-zinc-50 dark:bg-zinc-800/40 font-bold text-sm"
                     style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
                     value={newCategoryName}
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
                   />
-                  <button 
+                  <button
                     onClick={handleAddCategory}
                     className="p-4 bg-brand-blue text-white rounded-xl shadow-lg shadow-brand-blue/20 hover:scale-[1.05] transition-all"
                   >
@@ -403,7 +442,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
                   {availableCategories.map((cat, i) => (
                     <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700 transition-all group">
                       <span className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{cat}</span>
-                      <button 
+                      <button
                         onClick={() => removeCategory(cat)}
                         className="p-2 text-rose-500 opacity-0 group-hover:opacity-100 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-all"
                       >
@@ -503,34 +542,22 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
         <h2 className="text-xl md:text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>{editingProduct ? 'Edit Product' : 'Add Products'}</h2>
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="px-6 py-2.5 rounded-xl border font-black text-sm hover:bg-zinc-100 transition-all" style={{ color: 'var(--text-primary)', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>Cancel</button>
-          
+
           {/* Main Header Menu (Circled in Screenshot) */}
           <div className="relative">
-            <button 
+            <button
               onClick={() => setIsHeaderMenuOpen(!isHeaderMenuOpen)}
-              className="p-2.5 rounded-xl border hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative" 
+              className="p-2.5 rounded-xl border hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors relative"
               style={{ color: 'var(--text-muted)', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
             >
               <MoreVertical size={20} />
             </button>
-            
+
             {isHeaderMenuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setIsHeaderMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-2 w-56 rounded-2xl border shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-200" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
                   <div className="p-2">
-                    <button 
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all text-left group"
-                      onClick={() => {
-                        setIsCategoryModalOpen(true);
-                        setIsHeaderMenuOpen(false);
-                      }}
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue group-hover:bg-brand-blue group-hover:text-white transition-all">
-                        <Plus size={16} strokeWidth={3} />
-                      </div>
-                      <span className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>Product Category</span>
-                    </button>
                     <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all text-left group">
                       <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
                         <Info size={16} />
@@ -553,7 +580,7 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
               <h3 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>Upload Image</h3>
               <MoreVertical size={18} className="text-zinc-400" />
             </div>
-            
+
             <CustomDropzone index={0} isLarge={true} />
 
             <div className="grid grid-cols-3 gap-4">
@@ -571,12 +598,12 @@ export default function AddProduct({ onBack, onSave, editingProduct }) {
             <StepCard number={2} title="General information" active={activeStep === 2} />
             <StepCard number={3} title="Price Information" active={activeStep === 3} />
           </div>
-          
+
           <div className="p-6 md:p-10 rounded-[32px] border shadow-sm flex flex-col" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <div className="flex-1">
               {renderStepContent()}
             </div>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-10 mt-10 border-t" style={{ borderColor: 'var(--border-color)' }}>
               <div className="w-full sm:w-auto">{activeStep > 1 && <button onClick={() => setActiveStep(activeStep - 1)} className="w-full sm:w-auto px-8 py-3.5 rounded-xl border-2 border-brand-blue/20 text-brand-blue font-black text-sm hover:bg-brand-blue/5 transition-all">Previous</button>}</div>
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">

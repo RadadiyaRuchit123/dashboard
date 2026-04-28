@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Printer, Download, Plus, Eye, Trash2, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import { autoTable } from 'jspdf-autotable';
 import { useTheme } from '../context/ThemeContext';
 
 const mockOrders = [
@@ -9,7 +9,7 @@ const mockOrders = [
   { id: '#69SWE23', product: 'INBOOK Y2 PLUS Intel', qty: 9, date: '02 Nov 2023', customer: 'David Smith', price: '₹6030.23', payment: 'Cash on Delivery', status: 'Completed', image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=50&h=50&fit=crop' },
   { id: '#2FSD6D4', product: 'Men Luxury Stainless Steel', qty: 18, date: '10 Nov 2023', customer: 'James Brown', price: '₹2300.65', payment: 'Online', status: 'Progress', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=50&h=50&fit=crop' },
   { id: '#70SDF4F8', product: 'Stainless Steel Analog Watch', qty: 30, date: '26 Dec 2023', customer: 'Emily Johnson', price: '₹7800.00', payment: 'Online', status: 'Completed', image: 'https://images.unsplash.com/photo-1524592091214-8c919d20743b?w=50&h=50&fit=crop' },
-  { id: '#70SD6D46', product: 'MI Airdots Wireless Earbuds', qty: 08, date: '17 Jun 2023', customer: 'Sophia Williams', price: '₹620.00', payment: 'Cash on Delivery', status: 'Progress', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=50&h=50&fit=crop' },
+  { id: '#70SD6D46', product: 'MI Airdots Wireless Earbuds', qty: 8, date: '17 Jun 2023', customer: 'Sophia Williams', price: '₹620.00', payment: 'Cash on Delivery', status: 'Progress', image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=50&h=50&fit=crop' },
 ];
 
 export default function OrderList({ onCreateOrder }) {
@@ -68,7 +68,9 @@ export default function OrderList({ onCreateOrder }) {
       alternateRowStyles: { fillColor: [245, 247, 250] }
     });
 
-    doc.save(`MentX_Orders_Report_${new Date().getTime()}.pdf`);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const exportToPDF = (order) => {
@@ -158,9 +160,9 @@ export default function OrderList({ onCreateOrder }) {
     doc.text(`${pdfCurrency}${total.toFixed(2)}`, 190, finalY + 22, { align: 'right' });
 
     // Open & Save
-    const pdfBlob = doc.output('bloburl');
-    window.open(pdfBlob, '_blank');
-    doc.save(`Invoice_${data.id || 'Order'}.pdf`);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const filteredOrders = orders.filter(o => 

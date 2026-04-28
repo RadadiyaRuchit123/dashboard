@@ -4,8 +4,8 @@ import {
   Edit2, Trash2, Eye, ChevronLeft, ChevronRight, X, 
   Upload, Calendar, Mail, Phone, Globe, Hash, Building2, User, AlertCircle, DollarSign
 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import { autoTable } from 'jspdf-autotable';
 import { useTheme } from '../context/ThemeContext';
 
 const initialCustomers = [
@@ -128,7 +128,7 @@ export default function CustomerList() {
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
     doc.text(`Total Customers: ${filteredCustomers.length}`, 14, 33);
 
-    const tableColumn = ["ID", "Name", "Email", "Phone", "Join Date", "Status", "Spent"];
+    const tableColumn = ["ID", "Name", "Email", "Phone", "Join Date", "Status", "Total Spent"];
     const tableRows = filteredCustomers.map(c => [
       c.id,
       c.name,
@@ -136,7 +136,7 @@ export default function CustomerList() {
       c.phone,
       c.date,
       c.status,
-      `${currency}${c.spent}`
+      `${currency === '₹' ? 'Rs.' : currency}${c.spent}`
     ]);
 
     autoTable(doc, {
@@ -149,7 +149,9 @@ export default function CustomerList() {
       alternateRowStyles: { fillColor: [245, 247, 250] }
     });
 
-    doc.save(`MentX_Customers_${new Date().getTime()}.pdf`);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const inputStyle = {
@@ -211,7 +213,8 @@ export default function CustomerList() {
       </div>
 
       <div className="premium-card rounded-[32px] overflow-hidden shadow-sm border" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
               <tr className="text-[11px] uppercase font-black tracking-widest border-b" style={{ backgroundColor: 'var(--bg-card-inner)', color: 'var(--text-primary)', opacity: 0.8, borderColor: 'var(--border-color)' }}>
@@ -238,9 +241,9 @@ export default function CustomerList() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
+                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
+                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
+                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
                   <td className="px-8 py-5 text-xs font-black text-brand-blue">{currency}{c.spent}</td>
                   <td className="px-8 py-5">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-lg border ${c.status === 'Active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20'}`}>
@@ -258,6 +261,51 @@ export default function CustomerList() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y" style={{ borderColor: 'var(--border-color)' }}>
+          {currentItems.map((c, idx) => (
+            <div key={idx} className="p-6 space-y-4">
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white dark:border-zinc-800 shadow-sm">
+                    <img src={c.avatar} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>{c.name}</h4>
+                    <p className="text-[10px] font-bold text-zinc-400">{c.id}</p>
+                  </div>
+                </div>
+                <span className={`text-[9px] font-black px-2.5 py-1 rounded-lg border ${c.status === 'Active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20'}`}>
+                  {c.status}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 py-2">
+                <div className="col-span-2 sm:col-span-1">
+                  <p className="text-[10px] font-black opacity-40 uppercase mb-1">Email Address</p>
+                  <p className="text-xs font-bold break-all" style={{ color: 'var(--text-primary)' }}>{c.email}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black opacity-40 uppercase mb-1">Phone Number</p>
+                  <p className="text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>{c.phone}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black opacity-40 uppercase mb-1">Total Spent</p>
+                  <p className="text-sm font-black text-brand-blue">{currency}{c.spent}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => handleView(c)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-xs transition-all hover:bg-zinc-50" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+                  <Eye size={14} /> View
+                </button>
+                <button onClick={() => handleEdit(c)} className="p-3 rounded-xl border hover:bg-zinc-50" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Edit2 size={14} /></button>
+                <button onClick={() => setDeleteConfirmId(c.id)} className="p-3 rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-500"><Trash2 size={14} /></button>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="p-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: 'var(--border-color)' }}>
@@ -404,9 +452,9 @@ export default function CustomerList() {
                 </div>
                 <button onClick={() => setIsViewModalOpen(false)} className="ml-auto p-2.5 rounded-full hover:bg-zinc-100 transition-colors"><X size={20} className="text-zinc-400" /></button>
               </div>
-              <div className="grid grid-cols-2 gap-8">
-                <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Email</p><p className="text-sm font-bold">{viewingCustomer.email}</p></div>
-                <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Phone</p><p className="text-sm font-bold">{viewingCustomer.phone}</p></div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Email</p><p className="text-sm font-bold break-all">{viewingCustomer.email}</p></div>
+                <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Phone</p><p className="text-sm font-bold whitespace-nowrap">{viewingCustomer.phone}</p></div>
                 <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Join Date</p><p className="text-sm font-bold">{viewingCustomer.date}</p></div>
                 <div><p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Total Spent</p><p className="text-sm font-black text-brand-blue">{currency}{viewingCustomer.spent}</p></div>
               </div>

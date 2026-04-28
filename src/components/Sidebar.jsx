@@ -87,74 +87,92 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
         Menu
       </div>
       <nav className="space-y-1 mb-8">
-        {menuItems.map((item, index) => {
-          const isActive = activeItem === item.label;
-          const isExpanded = expandedItems.includes(item.label);
-          
-          return (
-            <div key={index} className="space-y-1">
-              <button
-                onClick={() => {
-                  setActiveItem(item.label);
-                  if (item.hasSub) {
-                    toggleExpand(item.label);
-                    // Automatically select the first sub-item if one isn't already selected for this category
-                    if (item.subItems && item.subItems.length > 0) {
-                      setActiveSubItem(item.subItems[0]);
+          {menuItems.map((item, index) => {
+            const isActive = activeItem === item.label;
+            const isExpanded = expandedItems.includes(item.label);
+            
+            return (
+              <div key={index} className="space-y-1">
+                <button
+                  onClick={() => {
+                    setActiveItem(item.label);
+                    if (item.hasSub) {
+                      toggleExpand(item.label);
+                      if (item.subItems && item.subItems.length > 0) {
+                        setActiveSubItem(item.subItems[0]);
+                      }
+                    } else {
+                      setIsOpen(false);
                     }
-                  }
-                }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                  ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
-                  : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
-                  }`}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon
-                    size={20}
-                    className={isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'}
-                  />
-                  <span className="text-sm font-semibold">{item.label}</span>
-                </div>
-                {item.hasSub && (
-                  <ChevronDown 
-                    size={14} 
-                    className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                    style={{ color: isActive ? '#fff' : 'var(--text-muted)' }} 
-                  />
-                )}
-              </button>
+                  }}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                    ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
+                    : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+                    }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon
+                      size={20}
+                      className={isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'}
+                    />
+                    <span className="text-sm font-semibold">{item.label}</span>
+                  </div>
+                  {item.hasSub && (
+                    <ChevronDown 
+                      size={14} 
+                      className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                      style={{ color: isActive ? '#fff' : 'var(--text-muted)' }} 
+                    />
+                  )}
+                </button>
 
-              {/* Sub Items */}
-              {item.hasSub && isExpanded && (
-                <div className="ml-5 space-y-1 mt-1 border-l-2 pl-4" style={{ borderColor: 'var(--border-color)' }}>
-                  {item.subItems.map((sub, subIdx) => {
-                    const isSubActive = activeSubItem === sub;
-                    return (
-                      <button
-                        key={subIdx}
-                        onClick={() => {
-                          setActiveItem(item.label);
-                          setActiveSubItem(sub);
-                        }}
-                        className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all duration-200 rounded-xl relative ${
-                          isSubActive 
-                            ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20' 
-                            : 'text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300'
-                        }`}
-                      >
-                        {isSubActive && (
-                          <div className="absolute left-[-18px] top-1/2 -translate-y-1/2 w-[4px] h-[4px] bg-brand-blue rounded-full shadow-[0_0_8px_rgba(97,105,255,1)]" />
-                        )}
-                        <span>{sub}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                {/* Sub Items - Curved Branch Design */}
+                {item.hasSub && isExpanded && (
+                  <div className="ml-7 space-y-1 mt-1 relative">
+                    {/* Main Vertical Line */}
+                    <div 
+                      className="absolute left-[-12px] top-0 bottom-4 w-[1.5px]" 
+                      style={{ backgroundColor: 'var(--border-color)' }}
+                    />
+                    
+                    {item.subItems.map((sub, subIdx) => {
+                      const isSubActive = isActive && activeSubItem === sub;
+                      return (
+                        <div key={subIdx} className="relative">
+                          {/* Curved Connector Line */}
+                          <div 
+                            className={`absolute left-[-12px] top-[18px] w-[12px] h-[12px] border-l-[1.5px] border-b-[1.5px] rounded-bl-lg transition-colors duration-300 ${
+                              isSubActive ? 'border-brand-blue' : 'border-zinc-200 dark:border-zinc-800'
+                            }`}
+                            style={{ 
+                              top: '0px',
+                              height: '18px',
+                              borderColor: isSubActive ? 'var(--brand-blue)' : 'var(--border-color)'
+                            }}
+                          />
+                          
+                          <button
+                            onClick={() => {
+                              setActiveItem(item.label);
+                              setActiveSubItem(sub);
+                              setIsOpen(false);
+                            }}
+                            className={`w-full text-left ml-3 px-4 py-2.5 text-xs font-bold transition-all duration-300 rounded-xl ${
+                              isSubActive 
+                                ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20' 
+                                : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100'
+                            }`}
+                          >
+                            <span>{sub}</span>
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </nav>
 
       {/* Other Section */}

@@ -4,8 +4,8 @@ import {
   Edit2, Trash2, Eye, ChevronLeft, ChevronRight, X, 
   Upload, Calendar, Mail, Phone, Globe, Hash, Building2, User, AlertCircle
 } from 'lucide-react';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import { autoTable } from 'jspdf-autotable';
 import { useTheme } from '../context/ThemeContext';
 
 const initialSuppliers = [
@@ -132,7 +132,9 @@ export default function SupplierList() {
       alternateRowStyles: { fillColor: [245, 247, 250] }
     });
 
-    doc.save(`MentX_Suppliers_${new Date().getTime()}.pdf`);
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   };
 
   const handleAvatarChange = (e) => {
@@ -358,8 +360,8 @@ export default function SupplierList() {
       {isViewModalOpen && viewingSupplier && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsViewModalOpen(false)} />
-          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-8 md:p-10 space-y-8">
+          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-6 md:p-10 space-y-8">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
@@ -437,8 +439,8 @@ export default function SupplierList() {
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-8 md:p-10 space-y-8">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-6 md:p-10 space-y-8">
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>{editingSupplier ? 'Edit Supplier' : 'Add Supplier'}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
