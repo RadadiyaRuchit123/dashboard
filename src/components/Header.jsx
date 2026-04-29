@@ -37,37 +37,44 @@ export default function Header({ onMenuClick, searchQuery, setSearchQuery }) {
           <input 
             type="text"
             placeholder="Search analytics, orders..."
-            className={`w-full py-3 pl-14 pr-6 rounded-[20px] bg-zinc-50/50 dark:bg-white/[0.03] border-2 focus:outline-none focus:border-brand-blue/50 transition-all font-semibold text-sm ${isSearchVisible ? 'opacity-100 translate-x-0 shadow-inner' : 'opacity-0 translate-x-12 pointer-events-none'}`}
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+            className={`w-full py-3 pl-14 pr-6 rounded-[20px] border-2 focus:outline-none transition-all font-bold text-sm shadow-sm ${isSearchVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12 pointer-events-none'}`}
+            style={{ 
+              backgroundColor: 'var(--bg-card-inner)',
+              borderColor: isSearchVisible ? 'var(--color-brand-blue)' : 'var(--border-color)',
+              color: 'var(--text-primary)'
+            }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button 
             onClick={() => setIsSearchVisible(!isSearchVisible)}
-            className={`absolute left-0 w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/10 border shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all z-10 ${isSearchVisible ? 'border-brand-blue bg-brand-blue/5' : ''}`}
-            style={{ borderColor: isSearchVisible ? 'var(--color-brand-blue)' : 'var(--border-color)' }}
+            className={`absolute left-0 w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border shadow-sm hover:shadow-md transition-all z-10 ${isSearchVisible ? 'rotate-90' : ''}`}
+            style={{ 
+              backgroundColor: isSearchVisible ? 'var(--bg-card)' : 'var(--bg-card)',
+              borderColor: isSearchVisible ? 'var(--color-brand-blue)' : 'var(--border-color)' 
+            }}
           >
-            {isSearchVisible ? <X size={20} className="text-brand-blue" /> : <SearchIcon size={20} style={{ color: 'var(--text-primary)' }} />}
+            {isSearchVisible ? <X size={18} className="text-brand-blue" strokeWidth={3} /> : <SearchIcon size={20} style={{ color: 'var(--text-primary)' }} />}
           </button>
         </div>
 
         <div className={`flex items-center gap-3 md:gap-4 transition-all duration-500 ${isSearchVisible ? 'hidden md:flex opacity-0 scale-90 translate-x-4' : 'flex opacity-100 scale-100 translate-x-0'}`}>
           {/* Bell */}
-          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white transition-all relative group shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
-            <NotificationIcon size={20} className="group-hover:rotate-12 group-hover:!text-black transition-all" style={{ color: 'var(--text-primary)' }} />
+          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all relative group shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+            <NotificationIcon size={20} className="group-hover:rotate-12 transition-all" style={{ color: 'var(--text-primary)' }} />
             <span className="absolute top-3.5 right-3.5 md:top-4 md:right-4 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0C1021] animate-pulse" />
           </button>
-
+ 
           {/* Cart */}
-          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white hover:text-black dark:hover:text-black transition-all shadow-sm group" style={{ borderColor: 'var(--border-color)' }}>
-            <ShoppingCart size={20} className="group-hover:!text-black transition-all" style={{ color: 'var(--text-primary)' }} />
+          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all shadow-sm group" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+            <ShoppingCart size={20} className="transition-all" style={{ color: 'var(--text-primary)' }} />
           </button>
 
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white transition-all shadow-sm"
-            style={{ borderColor: 'var(--border-color)' }}
+            className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all shadow-sm"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
           >
             {isDark ? <Sun size={20} className="text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)]" /> : <Moon size={20} className="text-indigo-500 drop-shadow-[0_0_8px_rgba(99,102,241,0.4)]" />}
           </button>

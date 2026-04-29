@@ -28,6 +28,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
   const [activeHandle, setActiveHandle] = useState('min');
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const fileInputRef = React.useRef(null);
 
   const handleImportClick = () => {
@@ -144,23 +145,30 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
       const priceValue = parseFloat(priceStr) || 0;
       const matchesPrice = priceValue >= minPrice && priceValue <= maxPrice;
 
-      return matchesSearch && matchesPrice;
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(p.category);
+
+      return matchesSearch && matchesPrice && matchesCategory;
     });
-  }, [products, searchQuery, minPrice, maxPrice]);
+  }, [products, searchQuery, minPrice, maxPrice, selectedCategories]);
 
   // Simplified Pagination: Only show 20 items first, then load more
   const [displayCount, setDisplayCount] = useState(20);
   const visibleProducts = filteredProducts.slice(0, displayCount);
 
-  const Checkbox = ({ label, count }) => (
+  const Checkbox = ({ label, count, checked, onChange }) => (
     <label className="flex items-center justify-between group cursor-pointer py-1">
       <div className="flex items-center gap-3">
         <div className="relative flex items-center justify-center w-5 h-5 rounded border-2 transition-all group-hover:border-brand-blue"
-          style={{ borderColor: 'var(--border-color)', backgroundColor: 'transparent' }}>
-          <input type="checkbox" className="peer absolute opacity-0 w-full h-full cursor-pointer" />
-          <div className="w-2.5 h-2.5 bg-brand-blue rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
+          style={{ borderColor: checked ? 'var(--color-brand-blue)' : 'var(--border-color)', backgroundColor: 'transparent' }}>
+          <input
+            type="checkbox"
+            className="peer absolute opacity-0 w-full h-full cursor-pointer"
+            checked={checked}
+            onChange={onChange}
+          />
+          <div className={`w-2.5 h-2.5 bg-brand-blue rounded-sm transition-opacity ${checked ? 'opacity-100' : 'opacity-0'}`} />
         </div>
-        <span className="text-sm font-semibold transition-colors group-hover:text-brand-blue" style={{ color: 'var(--text-primary)' }}>{label}</span>
+        <span className="text-sm font-semibold transition-colors group-hover:text-brand-blue" style={{ color: checked ? 'var(--color-brand-blue)' : 'var(--text-primary)' }}>{label}</span>
       </div>
       <span className="text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.6 }}>{count.toLocaleString()}</span>
     </label>
@@ -188,7 +196,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
             <Download size={16} />
             <span className="hidden lg:inline">Template</span>
           </button>
-          <button 
+          <button
             onClick={handleImportClick}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-xs hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm"
             style={{ color: 'var(--text-primary)', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
@@ -221,7 +229,19 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
             <h4 className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Category</h4>
             <div className="space-y-3">
               {categories.map((cat, i) => (
-                <Checkbox key={i} label={cat.name} count={cat.count} />
+                <Checkbox
+                  key={i}
+                  label={cat.name}
+                  count={cat.count}
+                  checked={selectedCategories.includes(cat.name)}
+                  onChange={() => {
+                    setSelectedCategories(prev =>
+                      prev.includes(cat.name)
+                        ? prev.filter(c => c !== cat.name)
+                        : [...prev, cat.name]
+                    );
+                  }}
+                />
               ))}
             </div>
           </div>
@@ -331,158 +351,176 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
             </div>
           </div>
 
-          {/* Table Container */}
-          <div className="rounded-[32px] border shadow-sm overflow-hidden premium-card" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-            {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[1000px]">
-                <thead>
-                  <tr className="text-[11px] uppercase font-black tracking-widest border-b" style={{ backgroundColor: 'var(--bg-card-inner)', color: 'var(--text-primary)', opacity: 0.9, borderColor: 'var(--border-color)' }}>
-                    <th className="px-8 py-5">Product ID ↑↓</th>
-                    <th className="px-8 py-5">Product name ↑↓</th>
-                    <th className="px-8 py-5">Size ↑↓</th>
-                    <th className="px-8 py-5">Color ↑↓</th>
-                    <th className="px-8 py-5">Price ↑↓</th>
-                    <th className="px-8 py-5">Sold ↑↓</th>
-                    <th className="px-8 py-5">Date ↑↓</th>
-                    <th className="px-8 py-5">Status ↑↓</th>
-                    <th className="px-8 py-5 text-right">Actions ↑↓</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
-                  {visibleProducts.map((p, i) => (
-                    <tr key={p.id || i} className="hover:bg-white transition-all duration-300 group border-b cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
-                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.id}</td>
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner overflow-hidden border" style={{ backgroundColor: 'var(--bg-card-inner)', borderColor: 'var(--border-color)' }}>
-                            {p.images && p.images.length > 0 ? (
-                              <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                            ) : (
-                              p.flag || '📦'
-                            )}
-                          </div>
-                          <span className="text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.size || '-'}</td>
-                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>
-                        {p.color ? (
-                          <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: p.color.includes('#') ? p.color : 'transparent' }}></span>
-                            <span className="transition-all group-hover:!text-black">{p.color}</span>
-                          </div>
-                        ) : '-'}
-                      </td>
-                      <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{p.price?.toString().replace(/[₹$]/g, '')}</td>
-                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.sold}</td>
-                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.date}</td>
-                      <td className="px-8 py-5">
-                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-lg inline-block text-center min-w-[100px] border transition-all ${['active', 'in stock'].includes(p.status?.toLowerCase())
-                            ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'
-                            : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, ''))
-                              ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
-                              : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
-                          }`}>
-                          {p.status}
-                        </span>
-                      </td>
-                      <td className="px-8 py-5">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => onEdit(p)}
-                            className="p-2.5 rounded-xl border border-transparent hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-[#58a6ff] hover:text-brand-blue shadow-none"
-                          >
-                            <Edit2 size={15} strokeWidth={3} />
-                          </button>
-                          <button
-                            onClick={() => onDelete(p.id)}
-                            className="p-2.5 rounded-xl border border-transparent hover:border-rose-500/30 hover:bg-rose-500/5 transition-all text-[#f85149] hover:text-rose-500 shadow-none"
-                          >
-                            <Trash2 size={15} strokeWidth={3} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="md:hidden divide-y" style={{ borderColor: 'var(--border-color)' }}>
-              {visibleProducts.map((p, i) => (
-                <div key={p.id || i} className="p-6 space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl shadow-inner overflow-hidden border bg-zinc-50" style={{ borderColor: 'var(--border-color)' }}>
-                        {p.images && p.images.length > 0 ? (
-                          <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
-                        ) : (
-                          p.flag || '📦'
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-black pr-8" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
-                        <p className="text-[10px] font-bold opacity-50 uppercase tracking-wider">{p.id}</p>
-                      </div>
-                    </div>
-                    <span className={`text-[9px] font-black px-3 py-1 rounded-lg border uppercase tracking-widest ${['active', 'in stock'].includes(p.status?.toLowerCase())
-                        ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'
-                        : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, ''))
-                          ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
-                          : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
-                      }`}>
-                      {p.status}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 py-2">
-                    <div>
-                      <p className="text-[10px] font-black opacity-40 uppercase mb-1">Price</p>
-                      <p className="text-sm font-black text-brand-blue">{currency}{p.price?.toString().replace(/[₹$]/g, '')}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black opacity-40 uppercase mb-1">Sold</p>
-                      <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{p.sold} items</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black opacity-40 uppercase mb-1">Category</p>
-                      <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{p.category || '-'}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black opacity-40 uppercase mb-1">Brand</p>
-                      <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{p.brand || '-'}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-2">
-                    <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-xs transition-all hover:bg-zinc-50 hover:text-black" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
-                      <Edit2 size={14} /> Edit Product
-                    </button>
-                    <button onClick={() => onDelete(p.id)} className="w-12 flex items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-500 hover:bg-rose-500 hover:text-white transition-all">
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+          {/* View Container */}
+          <div className="space-y-6">
+            {view === 'list' ? (
+              /* List View (Desktop Table + Mobile Cards) */
+              <div className="rounded-[32px] border shadow-sm overflow-hidden premium-card" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[1000px]">
+                    <thead>
+                      <tr className="text-[11px] uppercase font-black tracking-widest border-b" style={{ backgroundColor: 'var(--bg-card-inner)', color: 'var(--text-primary)', opacity: 0.9, borderColor: 'var(--border-color)' }}>
+                        <th className="px-8 py-5">Product ID ↑↓</th>
+                        <th className="px-8 py-5">Product name ↑↓</th>
+                        <th className="px-8 py-5">Size ↑↓</th>
+                        <th className="px-8 py-5">Color ↑↓</th>
+                        <th className="px-8 py-5">Price ↑↓</th>
+                        <th className="px-8 py-5">Sold ↑↓</th>
+                        <th className="px-8 py-5">Date ↑↓</th>
+                        <th className="px-8 py-5">Status ↑↓</th>
+                        <th className="px-8 py-5 text-right">Actions ↑↓</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
+                      {visibleProducts.map((p, i) => (
+                        <tr key={p.id || i} className="hover:bg-white transition-all duration-300 group border-b cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
+                          <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.id}</td>
+                          <td className="px-8 py-5">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner overflow-hidden border" style={{ backgroundColor: 'var(--bg-card-inner)', borderColor: 'var(--border-color)' }}>
+                                {p.images && p.images.length > 0 ? (
+                                  <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  p.flag || '📦'
+                                )}
+                              </div>
+                              <span className="text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
+                            </div>
+                          </td>
+                          <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.size || '-'}</td>
+                          <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>
+                            {p.color ? (
+                              <div className="flex items-center gap-2">
+                                <span className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: p.color.includes('#') ? p.color : 'transparent' }}></span>
+                                <span className="transition-all group-hover:!text-black">{p.color}</span>
+                              </div>
+                            ) : '-'}
+                          </td>
+                          <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{p.price?.toString().replace(/[₹$]/g, '')}</td>
+                          <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.sold}</td>
+                          <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.date}</td>
+                          <td className="px-8 py-5">
+                            <span className={`text-[10px] font-black px-4 py-1.5 rounded-lg inline-block text-center min-w-[100px] border transition-all ${['active', 'in stock'].includes(p.status?.toLowerCase())
+                              ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'
+                              : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, ''))
+                                ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
+                                : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
+                              }`}>
+                              {p.status}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5">
+                            <div className="flex items-center justify-end gap-2">
+                              <button onClick={() => onEdit(p)} className="p-2.5 rounded-xl border border-transparent hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-[#58a6ff] hover:text-brand-blue shadow-none"><Edit2 size={15} strokeWidth={3} /></button>
+                              <button onClick={() => onDelete(p.id)} className="p-2.5 rounded-xl border border-transparent hover:border-rose-500/30 hover:bg-rose-500/5 transition-all text-[#f85149] hover:text-rose-500 shadow-none"><Trash2 size={15} strokeWidth={3} /></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-              ))}
-            </div>
+
+                {/* Mobile Cards (Fallback for List View on small screens) */}
+                <div className="md:hidden divide-y" style={{ borderColor: 'var(--border-color)' }}>
+                  {visibleProducts.map((p, i) => (
+                    <div key={p.id || i} className="p-6 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl shadow-inner overflow-hidden border bg-zinc-50" style={{ borderColor: 'var(--border-color)' }}>
+                            {p.images && p.images.length > 0 ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" /> : p.flag || '📦'}
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-black pr-8" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
+                            <p className="text-[10px] font-bold opacity-50 uppercase tracking-wider">{p.id}</p>
+                          </div>
+                        </div>
+                        <span className={`text-[9px] font-black px-3 py-1 rounded-lg border uppercase tracking-widest ${['active', 'in stock'].includes(p.status?.toLowerCase()) ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20' : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, '')) ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20' : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'}`}>{p.status}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 py-2">
+                        <div><p className="text-[10px] font-black opacity-40 uppercase mb-1">Price</p><p className="text-sm font-black text-brand-blue">{currency}{p.price?.toString().replace(/[₹$]/g, '')}</p></div>
+                        <div><p className="text-[10px] font-black opacity-40 uppercase mb-1">Sold</p><p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{p.sold} items</p></div>
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-xs transition-all hover:bg-zinc-50 hover:text-black" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Edit2 size={14} /> Edit</button>
+                        <button onClick={() => onDelete(p.id)} className="w-12 flex items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={14} /></button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* Grid View (2 Columns) */
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {visibleProducts.map((p, i) => (
+                  <div
+                    key={p.id || i}
+                    className="group rounded-[40px] p-6 border shadow-premium hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
+                    style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
+                  >
+                    <div className="absolute top-6 right-6 z-10">
+                      <span className={`text-[9px] font-black px-3 py-1.5 rounded-full border uppercase tracking-widest backdrop-blur-md ${['active', 'in stock'].includes(p.status?.toLowerCase()) ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20' : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, '')) ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20' : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'}`}>{p.status}</span>
+                    </div>
+
+                    <div className="flex gap-6 items-center">
+                      <div className="w-32 h-32 rounded-[32px] overflow-hidden border-2 border-white dark:border-zinc-800 shadow-xl group-hover:scale-105 transition-transform duration-500 flex-shrink-0">
+                        {p.images && p.images.length > 0 ? <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center bg-zinc-100 text-3xl">{p.flag || '📦'}</div>}
+                      </div>
+
+                      <div className="flex-1 space-y-3 min-w-0">
+                        <div>
+                          <p className="text-[10px] font-bold text-brand-blue uppercase tracking-[0.2em] mb-1">{p.id}</p>
+                          <h4 className="text-base font-black truncate leading-tight" style={{ color: 'var(--text-primary)' }}>{p.name}</h4>
+                        </div>
+
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-xl font-black text-brand-blue">{currency}{p.price?.toString().replace(/[₹$]/g, '')}</span>
+                          <span className="text-[10px] font-bold text-zinc-400">USD</span>
+                        </div>
+
+                        <div className="flex items-center gap-4 pt-1">
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-black uppercase text-zinc-400 tracking-wider">Sold</span>
+                            <span className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>{p.sold}</span>
+                          </div>
+                          <div className="w-px h-6 bg-zinc-100 dark:bg-zinc-800" />
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-black uppercase text-zinc-400 tracking-wider">Category</span>
+                            <span className="text-xs font-black truncate max-w-[80px]" style={{ color: 'var(--text-primary)' }}>{p.category || '-'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 mt-6 pt-6 border-t" style={{ borderColor: 'var(--border-color)' }}>
+                      <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-zinc-50 dark:bg-white/5 border border-transparent hover:border-brand-blue/30 text-xs font-black transition-all group/btn" style={{ color: 'var(--text-primary)' }}>
+                        <Edit2 size={14} className="text-brand-blue group-hover/btn:scale-110 transition-transform" /> Edit Product
+                      </button>
+                      <button onClick={() => onDelete(p.id)} className="w-14 flex items-center justify-center py-3.5 rounded-2xl bg-rose-500/5 border border-transparent hover:border-rose-500/30 text-rose-500 transition-all group/trash">
+                        <Trash2 size={16} className="group-hover/trash:scale-110 transition-transform" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Load More Button */}
             {displayCount < filteredProducts.length && (
-              <div className="p-8 flex justify-center border-t" style={{ borderColor: 'var(--border-color)' }}>
+              <div className="py-8 flex justify-center">
                 <button
                   onClick={() => setDisplayCount(prev => prev + 20)}
-                  className="px-8 py-3 rounded-2xl bg-brand-blue/10 text-brand-blue font-black text-sm hover:bg-brand-blue hover:text-white transition-all shadow-lg shadow-brand-blue/5"
+                  className="px-10 py-4 rounded-2xl bg-brand-blue text-white font-black text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-brand-blue/30"
                 >
-                  Load More Products ({filteredProducts.length - displayCount} remaining)
+                  Load More Products ({filteredProducts.length - displayCount} left)
                 </button>
               </div>
             )}
 
             {/* Entry Summary */}
-            <div className="px-8 py-6 flex justify-between items-center border-t" style={{ borderColor: 'var(--border-color)' }}>
-              <p className="text-xs font-bold text-zinc-400">Showing {Math.min(displayCount, filteredProducts.length)} of {filteredProducts.length} entries</p>
+            <div className="flex justify-between items-center px-4">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Showing {Math.min(displayCount, filteredProducts.length)} of {filteredProducts.length} entries</p>
             </div>
           </div>
         </div>
