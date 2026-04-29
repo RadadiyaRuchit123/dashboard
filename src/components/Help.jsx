@@ -93,11 +93,15 @@ export default function Help() {
               <div 
                 key={i} 
                 onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
-                className={`p-6 rounded-[32px] border transition-all cursor-pointer group ${openFaq === i ? 'shadow-xl scale-[1.01]' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`} 
-                style={{ backgroundColor: 'var(--bg-card)', borderColor: openFaq === i ? 'var(--brand-blue)' : 'var(--border-color)' }}
+                className={`p-6 rounded-[32px] border transition-all duration-500 cursor-pointer group ${openFaq === i ? 'shadow-2xl shadow-brand-blue/10 scale-[1.01]' : 'hover:bg-zinc-50 dark:hover:bg-white/5'}`} 
+                style={{ 
+                  backgroundColor: 'var(--bg-card)', 
+                  borderColor: openFaq === i ? 'var(--color-brand-blue)' : 'var(--border-color)',
+                  boxShadow: openFaq === i ? '0 20px 40px -15px rgba(97, 105, 255, 0.2)' : ''
+                }}
               >
                 <div className="flex justify-between items-center gap-4">
-                  <h4 className={`text-sm font-black transition-colors ${openFaq === i ? 'text-brand-blue' : ''}`} style={{ color: openFaq === i ? '' : 'var(--text-primary)' }}>{faq.q}</h4>
+                  <h4 className={`text-sm font-black transition-all duration-300 ${openFaq === i ? 'text-brand-blue scale-105 origin-left' : ''}`} style={{ color: openFaq === i ? 'var(--color-brand-blue)' : 'var(--text-primary)' }}>{faq.q}</h4>
                   <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all ${openFaq === i ? 'bg-brand-blue text-white rotate-180' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'}`}>
                     <ChevronDown size={18} />
                   </div>
