@@ -199,14 +199,14 @@ const EditModal = ({ item, isOpen, onClose, onSave }) => {
 const OrderRow = ({ item, onUpdate, onDelete, onEditClick }) => {
   const total = (parseFloat(item.qty || 0) * parseFloat(item.price || 0)).toFixed(2);
   return (
-    <tr className="group border-b last:border-0 hover:bg-zinc-50/50 dark:hover:bg-white/5 transition-colors" style={{ borderColor: 'var(--border-color)' }}>
-      <td className="py-5 pl-4 text-[11px] font-bold text-zinc-400 dark:text-zinc-500">{item.id}</td>
+    <tr className="group border-b last:border-0 hover:bg-white transition-all duration-300 cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
+      <td className="py-5 pl-4 text-[11px] font-bold text-zinc-400 dark:text-zinc-500 transition-all group-hover:!text-black group-hover:!opacity-100">{item.id}</td>
       <td className="py-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden border border-brand-blue/10" style={{ backgroundColor: 'var(--bg-card-inner)' }}>
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden border border-brand-blue/10 bg-zinc-50/50" style={{ borderColor: 'var(--border-color)' }}>
             <img src={item.image} alt={item.name} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
           </div>
-          <span className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>{item.name}</span>
+          <span className="text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{item.name}</span>
         </div>
       </td>
       <td className="py-5 text-center">
@@ -225,12 +225,12 @@ const OrderRow = ({ item, onUpdate, onDelete, onEditClick }) => {
             type="number"
             value={item.price}
             onChange={(e) => onUpdate(item.id, 'price', e.target.value)}
-            className="w-16 bg-transparent border-b border-transparent focus:border-brand-blue/30 text-xs font-black text-center outline-none transition-all"
+            className="w-16 bg-transparent border-b border-transparent focus:border-brand-blue/30 text-xs font-black text-center outline-none transition-all group-hover:!text-black"
             style={{ color: 'var(--text-primary)' }}
           />
         </div>
       </td>
-      <td className="py-5 text-center text-xs font-black" style={{ color: 'var(--text-primary)' }}>${total}</td>
+      <td className="py-5 text-center text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>${total}</td>
       <td className="py-6 pr-4 pl-3  no-print text-right">
         <div className="flex items-center justify-end gap-3 transition-opacity">
           <button onClick={() => onEditClick(item)} className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-brand-blue/10 text-brand-blue/60 hover:text-brand-blue hover:bg-brand-blue/5 shadow-sm transition-all active:scale-95" style={{ borderColor: 'var(--border-color)' }}><Edit2 size={15} /></button>
@@ -295,44 +295,130 @@ export default function Invoice() {
     try {
       setIsExporting(true);
       const doc = new jsPDF();
+      const brandColor = [97, 105, 255]; // #6169ff
+      const grayColor = [100, 100, 100];
 
+      // 1. Branding & Header
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(22);
-      doc.setTextColor(97, 105, 255);
+      doc.setFontSize(28);
+      doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
       doc.text('Ment X', 14, 25);
-
+      
       doc.setFontSize(10);
-      doc.setTextColor(100);
-      doc.text(`Invoice: ${invoiceData.invoiceNumber.replace('#', '')}`, 14, 35);
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 40);
+      doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+      doc.text('OFFICIAL BILLING DOCUMENT', 14, 32);
 
-      const tableColumn = ["Product ID", "Product Name", "Qty", "Price", "Total"];
-      const tableRows = items.map(item => {
-        const qty = parseFloat(item.qty) || 0;
-        const price = parseFloat(item.price) || 0;
-        return [
-          item.id,
-          item.name,
-          qty.toString(),
-          `$${price.toFixed(2)}`,
-          `$${(qty * price).toFixed(2)}`
-        ];
-      });
+      doc.setFontSize(16);
+      doc.setTextColor(0);
+      doc.text('INVOICE', 196, 25, { align: 'right' });
+      doc.setFontSize(10);
+      doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+      doc.text(invoiceData.invoiceNumber, 196, 32, { align: 'right' });
+
+      // 2. Info Section (Two Columns)
+      doc.setDrawColor(240);
+      doc.line(14, 40, 196, 40);
+
+      // Bill To Column
+      doc.setFontSize(9);
+      doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+      doc.text('BILL TO:', 14, 50);
+      doc.setFontSize(11);
+      doc.setTextColor(0);
+      doc.text(invoiceData.customerName, 14, 57);
+      doc.setFontSize(9);
+      doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+      
+      const splitAddress = doc.splitTextToSize(invoiceData.address, 70);
+      doc.text(splitAddress, 14, 63);
+      
+      doc.text(`Email: ${invoiceData.email}`, 14, 63 + (splitAddress.length * 5));
+      doc.text(`Phone: ${invoiceData.phone}`, 14, 68 + (splitAddress.length * 5));
+
+      // Invoice Details Column
+      doc.setFontSize(9);
+      doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+      doc.text('DETAILS:', 120, 50);
+      doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+      doc.text(`Issue Date: ${formatDate(invoiceData.issueDate)}`, 120, 57);
+      doc.text(`Delivery Date: ${formatDate(invoiceData.deliveryDate)}`, 120, 63);
+      doc.text(`Product ID: ${invoiceData.productId}`, 120, 69);
+      doc.text(`Exported on: ${new Date().toLocaleDateString()}`, 120, 75);
+
+      // 3. Product Table
+      const tableColumn = ["Product ID", "Product Name", "Qty", "Unit Price", "Total"];
+      const tableRows = items.map(item => [
+        item.id,
+        item.name,
+        item.qty.toString(),
+        `$ ${parseFloat(item.price).toFixed(2)}`,
+        `$ ${(parseFloat(item.qty) * parseFloat(item.price)).toFixed(2)}`
+      ]);
 
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
-        startY: 50,
-        headStyles: { fillColor: [97, 105, 255] },
-        alternateRowStyles: { fillColor: [245, 247, 250] },
-        margin: { top: 50 }
+        startY: 85,
+        theme: 'grid',
+        headStyles: { fillColor: brandColor, textColor: 255, fontSize: 9, fontStyle: 'bold' },
+        styles: { fontSize: 8, cellPadding: 4 },
+        alternateRowStyles: { fillColor: [250, 250, 255] },
+        columnStyles: {
+          2: { halign: 'center' },
+          3: { halign: 'right' },
+          4: { halign: 'right' }
+        }
       });
 
-      const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 10 : 150;
-      doc.setFontSize(12);
-      doc.text(`Total Amount: $${totals.totalAmount}`, 196, finalY, { align: 'right' });
+      // 4. Totals Breakdown
+      const finalY = doc.lastAutoTable.finalY + 15;
+      doc.setFontSize(9);
+      doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+      
+      const summaryX = 130; // Increased gap by moving labels to the left
+      const valueX = 196;
 
-      // Open in new tab instead of direct download to avoid localhost issues
+      doc.text('Subtotal:', summaryX, finalY);
+      doc.text(`$ ${totals.subtotal}`, valueX, finalY, { align: 'right' });
+      
+      doc.text('Tax (18%):', summaryX, finalY + 7);
+      doc.text(`$ ${totals.tax}`, valueX, finalY + 7, { align: 'right' });
+      
+      doc.text('Additional Charge:', summaryX, finalY + 14);
+      doc.text(`$ ${totals.additionalCharge}`, valueX, finalY + 14, { align: 'right' });
+      
+      doc.text('Discount:', summaryX, finalY + 21);
+      doc.text(`- $ ${totals.discount}`, valueX, finalY + 21, { align: 'right' });
+
+      doc.setDrawColor(brandColor[0], brandColor[1], brandColor[2]);
+      doc.setLineWidth(0.5);
+      doc.line(summaryX, finalY + 25, valueX, finalY + 25);
+
+      doc.setFontSize(12); // Slightly smaller font for label to prevent overlap
+      doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+      doc.text('Total Amount:', summaryX, finalY + 33);
+      doc.setFontSize(14); // Slightly smaller font for value to prevent overlap
+      doc.text(`$ ${totals.totalAmount}`, valueX, finalY + 33, { align: 'right' });
+
+      // 5. Purchase Note
+      if (invoiceData.purchaseNote) {
+        doc.setFontSize(9);
+        doc.setTextColor(brandColor[0], brandColor[1], brandColor[2]);
+        doc.text('PURCHASE NOTE:', 14, finalY + 50);
+        doc.setFontSize(8);
+        doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+        doc.setFont("helvetica", "italic");
+        const splitNote = doc.splitTextToSize(`"${invoiceData.purchaseNote}"`, 100);
+        doc.text(splitNote, 14, finalY + 56);
+      }
+
+      // 6. Footer
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(200, 200, 200);
+      doc.text('THANK YOU FOR YOUR BUSINESS!', 105, 285, { align: 'center' });
+
+      // Output
       const blob = doc.output('blob');
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');

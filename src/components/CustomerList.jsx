@@ -225,7 +225,7 @@ export default function CustomerList() {
             </thead>
             <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
               {currentItems.map((c, idx) => (
-                <tr key={idx} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
+                <tr key={idx} className="hover:bg-white transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white dark:border-zinc-800 shadow-sm">
@@ -237,9 +237,9 @@ export default function CustomerList() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
                   <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{c.spent}</td>
                   <td className="px-8 py-5">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-lg border ${c.status === 'Active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20'}`}>

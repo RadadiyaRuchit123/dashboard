@@ -351,8 +351,8 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                 </thead>
                 <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
                   {visibleProducts.map((p, i) => (
-                    <tr key={p.id || i} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group border-b cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
-                      <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.id}</td>
+                    <tr key={p.id || i} className="hover:bg-white transition-all duration-300 group border-b cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
+                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.id}</td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner overflow-hidden border" style={{ backgroundColor: 'var(--bg-card-inner)', borderColor: 'var(--border-color)' }}>
@@ -365,8 +365,8 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                           <span className="text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
                         </div>
                       </td>
-                      <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.size || '-'}</td>
-                      <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>
+                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.size || '-'}</td>
+                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>
                         {p.color ? (
                           <div className="flex items-center gap-2">
                             <span className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: p.color.includes('#') ? p.color : 'transparent' }}></span>
@@ -374,9 +374,9 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                           </div>
                         ) : '-'}
                       </td>
-                      <td className="px-8 py-5 text-xs font-black" style={{ color: 'var(--text-primary)' }}>{currency}{p.price?.toString().replace(/[₹$]/g, '')}</td>
-                      <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.sold}</td>
-                      <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.date}</td>
+                      <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{p.price?.toString().replace(/[₹$]/g, '')}</td>
+                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.sold}</td>
+                      <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.date}</td>
                       <td className="px-8 py-5">
                         <span className={`text-[10px] font-black px-4 py-1.5 rounded-lg inline-block text-center min-w-[100px] border transition-all ${['active', 'in stock'].includes(p.status?.toLowerCase())
                             ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'

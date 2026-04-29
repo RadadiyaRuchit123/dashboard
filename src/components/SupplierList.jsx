@@ -241,7 +241,7 @@ export default function SupplierList() {
             </thead>
             <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
               {currentItems.map((s, idx) => (
-                <tr key={idx} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
+                <tr key={idx} className="hover:bg-white transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg overflow-hidden bg-zinc-50 p-1 flex items-center justify-center border" style={{ borderColor: 'var(--border-color)' }}>
@@ -258,10 +258,10 @@ export default function SupplierList() {
                       <span className="text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{s.supplier}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.date}</td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.email}</td>
-                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.phone}</td>
-                  <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black uppercase tracking-wider" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{s.country}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.date}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.email}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black group-hover:!opacity-100" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.phone}</td>
+                  <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black group-hover:!opacity-100 uppercase tracking-wider" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{s.country}</td>
                   <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{s.gst}</td>
                   <td className="px-8 py-5">
                     <div className="flex items-center justify-end gap-2">
