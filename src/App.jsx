@@ -12,6 +12,10 @@ import SupplierList from './components/SupplierList';
 import CustomerList from './components/CustomerList';
 import Analytics from './components/Analytics';
 import Invoice from './components/Invoice';
+import Message from './components/Message';
+import Help from './components/Help';
+import Setting from './components/Setting';
+import Logout from './components/Logout';
 import { MoreVertical } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
@@ -247,6 +251,14 @@ function MainLayout() {
             <Analytics />
            ) : activeItem === 'Invoice' ? (
             <Invoice />
+           ) : activeItem === 'Message' ? (
+            <Message />
+           ) : activeItem === 'Help' ? (
+            <Help />
+           ) : activeItem === 'Setting' ? (
+            <Setting />
+           ) : activeItem === 'Logout' ? (
+            <Logout />
            ) : (
             <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
               <div className="p-4 rounded-full bg-brand-blue/10 text-brand-blue">

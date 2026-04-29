@@ -87,44 +87,46 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
         Menu
       </div>
       <nav className="space-y-1 mb-8">
-          {menuItems.map((item, index) => {
-            const isActive = activeItem === item.label;
-            const isExpanded = expandedItems.includes(item.label);
-            
-            return (
-              <div key={index} className="space-y-1">
-                <button
-                  onClick={() => {
-                    setActiveItem(item.label);
-                    if (item.hasSub) {
-                      toggleExpand(item.label);
-                      if (item.subItems && item.subItems.length > 0) {
-                        setActiveSubItem(item.subItems[0]);
-                      }
-                    } else {
-                      setIsOpen(false);
+        {menuItems.map((item, index) => {
+          const isActive = activeItem === item.label;
+          const isExpanded = expandedItems.includes(item.label);
+          
+          return (
+            <div key={index} className="space-y-1">
+              <button
+                onClick={() => {
+                  setActiveItem(item.label);
+                  if (item.hasSub) {
+                    toggleExpand(item.label);
+                    // Automatically select the first sub-item if one isn't already selected for this category
+                    if (item.subItems && item.subItems.length > 0) {
+                      setActiveSubItem(item.subItems[0]);
                     }
-                  }}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                    ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
-                    : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <item.icon
-                      size={20}
-                      className={isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'}
-                    />
-                    <span className="text-sm font-semibold">{item.label}</span>
-                  </div>
-                  {item.hasSub && (
-                    <ChevronDown 
-                      size={14} 
-                      className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-                      style={{ color: isActive ? '#fff' : 'var(--text-muted)' }} 
-                    />
-                  )}
-                </button>
+                  } else {
+                    // If it's a direct link (no sub-items), close sidebar on mobile
+                    setIsOpen(false);
+                  }
+                }}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                  ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
+                  : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon
+                    size={20}
+                    className={isActive ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'}
+                  />
+                  <span className="text-sm font-semibold">{item.label}</span>
+                </div>
+                {item.hasSub && (
+                  <ChevronDown 
+                    size={14} 
+                    className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                    style={{ color: isActive ? '#fff' : 'var(--text-muted)' }} 
+                  />
+                )}
+              </button>
 
                 {/* Sub Items - Curved Branch Design */}
                 {item.hasSub && isExpanded && (
@@ -141,12 +143,11 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
                         <div key={subIdx} className="relative">
                           {/* Curved Connector Line */}
                           <div 
-                            className={`absolute left-[-12px] top-[18px] w-[12px] h-[12px] border-l-[1.5px] border-b-[1.5px] rounded-bl-lg transition-colors duration-300 ${
+                            className={`absolute left-[-12px] w-[14px] h-[20px] border-l-[1.5px] border-b-[1.5px] rounded-bl-xl transition-colors duration-300 ${
                               isSubActive ? 'border-brand-blue' : 'border-zinc-200 dark:border-zinc-800'
                             }`}
                             style={{ 
-                              top: '0px',
-                              height: '18px',
+                              top: '-2px',
                               borderColor: isSubActive ? 'var(--brand-blue)' : 'var(--border-color)'
                             }}
                           />
@@ -157,7 +158,7 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
                               setActiveSubItem(sub);
                               setIsOpen(false);
                             }}
-                            className={`w-full text-left ml-3 px-4 py-2.5 text-xs font-bold transition-all duration-300 rounded-xl ${
+                            className={`w-full text-left ml-3 px-4 py-2.5 text-xs font-bold transition-all duration-300 rounded-xl focus:outline-none ${
                               isSubActive 
                                 ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20' 
                                 : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100'
@@ -170,9 +171,9 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
                     })}
                   </div>
                 )}
-              </div>
-            );
-          })}
+            </div>
+          );
+        })}
       </nav>
 
       {/* Other Section */}
@@ -186,11 +187,23 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
         {otherItems.map((item, index) => (
           <button
             key={index}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-es-lg transition-all duration-200 group"
-            style={{ color: 'var(--text-secondary)' }}
+            onClick={() => {
+              setActiveItem(item.label);
+              setActiveSubItem(null);
+              setIsOpen(false);
+            }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+              activeItem === item.label
+                ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
+                : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+            }`}
+            style={{ color: activeItem === item.label ? '#fff' : 'var(--text-secondary)' }}
           >
-            <item.icon size={20} style={{ color: 'var(--text-muted)' }} />
-            <span className="text-sm font-medium">{item.label}</span>
+            <item.icon 
+              size={20} 
+              className={activeItem === item.label ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300'} 
+            />
+            <span className="text-sm font-semibold">{item.label}</span>
           </button>
         ))}
       </nav>
