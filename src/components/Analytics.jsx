@@ -96,9 +96,9 @@ const deviceData = [
 const StatCard = ({ title, value, change, color, data, gradientId }) => (
   <div className="premium-card rounded-[48px] p-8 md:p-10 flex flex-col gap-6 group transition-all duration-500 hover:shadow-2xl hover:-translate-y-1" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
     <div className="flex justify-between items-start">
-      <div className="space-y-2">
-        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 opacity-80">{title}</p>
-        <h3 className="text-4xl font-black tracking-tighter" style={{ color: 'var(--text-primary)' }}>{value}</h3>
+      <div className="space-y-1">
+        <p className="text-xs font-black uppercase tracking-widest text-zinc-400 opacity-80">{title}</p>
+        <h3 className="text-3xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>{value}</h3>
       </div>
       <div className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[11px] font-black tracking-widest uppercase transition-all group-hover:scale-105 ${color === 'green' ? 'bg-green-500/10 text-green-500' : color === 'orange' ? 'bg-orange-500/10 text-orange-500' : 'bg-rose-500/10 text-rose-500'}`}>
         {color === 'green' ? <TrendingUp size={14} strokeWidth={3} /> : <TrendingDown size={14} strokeWidth={3} />}
@@ -172,8 +172,8 @@ export default function Analytics() {
     <div className="space-y-8 md:space-y-12 pb-16 animate-in fade-in duration-1000 px-4 md:px-6">
       <div className="flex justify-between items-center px-2">
         <div className="space-y-1">
-          <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em]" style={{ color: 'var(--text-primary)' }}>Analytical</h2>
-          <p className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] opacity-60">In-depth performance overview</p>
+          <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Analytical Overview</h2>
+          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest opacity-60">In-depth performance overview</p>
         </div>
         <div className="relative">
           <div
@@ -207,8 +207,8 @@ export default function Analytics() {
         {/* Main Sell/Return Chart */}
         <div className="xl:col-span-2 premium-card rounded-[48px] p-8 md:p-10 space-y-10 shadow-premium" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-            <div className="space-y-2">
-              <h3 className="text-xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Product Sell / Purchase Return</h3>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Product Sell / Purchase Return</h3>
               <div className="flex items-center gap-4">
                 <span className="text-4xl font-black tracking-tighter" style={{ color: 'var(--text-primary)' }}>{currency}90,584B</span>
                 <span className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-green-500/10 text-green-500 text-xs font-black tracking-wider">
@@ -316,7 +316,7 @@ export default function Analytics() {
         {/* Top Customer Section */}
         <div className="xl:col-span-1 premium-card rounded-[48px] p-8 md:p-10 flex flex-col shadow-premium" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex justify-between items-center mb-10">
-            <h3 className="text-xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Top Customer</h3>
+            <h3 className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Top Customer</h3>
             <div className="relative">
               <div
                 onClick={() => toggleDropdown('topCustomer')}
@@ -377,7 +377,7 @@ export default function Analytics() {
         {/* Device Preferences Table */}
         <div className="xl:col-span-3 premium-card rounded-[48px] p-8 md:p-10 shadow-premium" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex justify-between items-center mb-10">
-            <h3 className="text-xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Device Preferences</h3>
+            <h3 className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Device Preferences</h3>
             <div className="relative">
               <div
                 onClick={() => toggleDropdown('device')}
@@ -436,7 +436,7 @@ export default function Analytics() {
         {/* Buyers Profile Donut Chart */}
         <div className="xl:col-span-2 premium-card rounded-[48px] p-8 md:p-10 flex flex-col shadow-premium" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
           <div className="flex justify-between items-center mb-10">
-            <h3 className="text-xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Buyers profile</h3>
+            <h3 className="text-lg font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Buyers profile</h3>
             <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-400 transition-all">
               <MoreVertical size={20} />
             </button>
