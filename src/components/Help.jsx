@@ -34,7 +34,7 @@ export default function Help() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-full overflow-x-hidden">
       {/* Hero Section */}
       <div className="relative rounded-[48px] overflow-hidden bg-brand-blue p-12 md:p-20 text-center shadow-2xl shadow-brand-blue/30">
         {/* Animated Background Blobs */}

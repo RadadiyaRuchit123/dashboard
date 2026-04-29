@@ -94,7 +94,7 @@ export default function Message() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-140px)] rounded-[32px] overflow-hidden border shadow-xl bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ borderColor: 'var(--border-color)' }}>
+    <div className="flex h-[calc(100vh-140px)] rounded-[32px] overflow-hidden border shadow-xl bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-full" style={{ borderColor: 'var(--border-color)' }}>
       {/* Sidebar - Chat List */}
       <div className={`${showChatList ? 'flex' : 'hidden'} md:flex w-full md:w-80 lg:w-96 flex-col bg-zinc-50/50 dark:bg-zinc-800/20`} style={{ borderRight: '1px solid transparent' }}>
         <div className="p-6 space-y-6">
