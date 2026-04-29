@@ -94,9 +94,9 @@ export default function Message() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-140px)] rounded-[32px] overflow-hidden border shadow-xl bg-white dark:bg-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-full mx-2" style={{ borderColor: 'var(--border-color)' }}>
+    <div className="flex h-[calc(100vh-140px)] rounded-[32px] overflow-hidden border shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-full mx-2" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
       {/* Sidebar - Chat List */}
-      <div className={`${showChatList ? 'flex' : 'hidden'} md:flex w-full md:w-80 lg:w-96 flex-col bg-zinc-50/50 dark:bg-zinc-800/20`} style={{ borderRight: '1px solid transparent' }}>
+      <div className={`${showChatList ? 'flex' : 'hidden'} md:flex w-full md:w-80 lg:w-96 flex-col`} style={{ borderRight: '1px solid var(--border-color)', backgroundColor: 'var(--bg-card-inner)' }}>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>Messages</h2>
@@ -110,8 +110,8 @@ export default function Message() {
             <input 
               type="text" 
               placeholder="Search chats..." 
-              className="w-full pl-12 pr-4 py-3 bg-white dark:bg-zinc-900 border rounded-2xl focus:outline-none focus:border-brand-blue transition-all font-bold text-xs"
-              style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+              className="w-full pl-12 pr-4 py-3 border rounded-2xl focus:outline-none focus:border-brand-blue transition-all font-bold text-xs"
+              style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-card)' }}
             />
           </div>
         </div>
@@ -121,7 +121,8 @@ export default function Message() {
             <button 
               key={chat.id}
               onClick={() => selectChat(chat)}
-              className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all duration-300 ${activeChat.id === chat.id ? 'bg-white dark:bg-zinc-800 shadow-lg scale-[1.02]' : 'hover:bg-white/50 dark:hover:bg-zinc-800/30'}`}
+              className={`w-full flex items-center gap-4 p-4 rounded-[24px] transition-all duration-300 ${activeChat.id === chat.id ? 'shadow-lg scale-[1.02]' : 'hover:opacity-80'}`}
+              style={{ backgroundColor: activeChat.id === chat.id ? 'var(--bg-card)' : 'transparent' }}
             >
               <div className="relative">
                 <img src={chat.avatar} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-zinc-700" />
@@ -145,7 +146,7 @@ export default function Message() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={`${!showChatList ? 'flex' : 'hidden'} md:flex flex-1 flex-col bg-white dark:bg-zinc-900 border-l`} style={{ borderColor: 'var(--border-color)' }}>
+      <div className={`${!showChatList ? 'flex' : 'hidden'} md:flex flex-1 flex-col border-l`} style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
         {/* Chat Header */}
         <div className="p-4 lg:p-6 flex items-center justify-between" style={{ borderBottom: '1px solid transparent' }}>
           <div className="flex items-center gap-4">
@@ -170,9 +171,9 @@ export default function Message() {
         </div>
 
         {/* Messages List */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin bg-zinc-50/30 dark:bg-zinc-800/10">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin" style={{ backgroundColor: 'var(--bg-card-inner)', opacity: 0.8 }}>
           <div className="flex justify-center">
-            <span className="px-4 py-1.5 rounded-full bg-white dark:bg-zinc-800 border text-[10px] font-black text-zinc-400 uppercase tracking-widest shadow-sm" style={{ borderColor: 'var(--border-color)' }}>Conversation Started</span>
+            <span className="px-4 py-1.5 rounded-full border text-[10px] font-black text-zinc-400 uppercase tracking-widest shadow-sm" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}>Conversation Started</span>
           </div>
           
           {activeChat.messages.map(msg => (
@@ -181,8 +182,12 @@ export default function Message() {
                 <div className={`px-5 py-3.5 rounded-[24px] text-xs font-bold shadow-sm ${
                   msg.sender === 'me' 
                     ? 'bg-brand-blue text-white rounded-tr-none' 
-                    : 'bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border rounded-tl-none'
-                }`} style={{ borderColor: msg.sender === 'me' ? 'transparent' : 'var(--border-color)' }}>
+                    : 'border rounded-tl-none'
+                }`} style={{ 
+                  borderColor: msg.sender === 'me' ? 'transparent' : 'var(--border-color)',
+                  backgroundColor: msg.sender === 'me' ? 'var(--color-brand-blue)' : 'var(--bg-card)',
+                  color: msg.sender === 'me' ? '#fff' : 'var(--text-primary)'
+                }}>
                   {msg.text}
                 </div>
                 <div className={`flex items-center gap-1.5 px-2 ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
@@ -196,8 +201,8 @@ export default function Message() {
         </div>
 
         {/* Message Input */}
-        <div className="p-6 bg-white dark:bg-zinc-900" style={{ borderTop: '1px solid transparent' }}>
-          <form onSubmit={handleSendMessage} className="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-800/50 p-2 rounded-[24px] border border-dashed" style={{ borderColor: 'var(--border-color)' }}>
+        <div className="p-6" style={{ backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-color)' }}>
+          <form onSubmit={handleSendMessage} className="flex items-center gap-4 p-2 rounded-[24px] border border-dashed" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card-inner)' }}>
             <div className="flex items-center gap-1 px-2">
               <button type="button" className="p-2.5 rounded-full text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 transition-all"><Paperclip size={18} /></button>
               <button type="button" className="p-2.5 rounded-full text-zinc-400 hover:bg-white dark:hover:bg-zinc-800 transition-all"><Smile size={18} /></button>
