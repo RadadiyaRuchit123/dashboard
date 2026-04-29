@@ -16,6 +16,7 @@ import Message from './components/Message';
 import Help from './components/Help';
 import Setting from './components/Setting';
 import Logout from './components/Logout';
+import Login from './components/Login';
 import { MoreVertical } from 'lucide-react';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
@@ -24,10 +25,9 @@ function DashboardHome({ products }) {
     return new Set(products?.map(p => p.name?.trim().toLowerCase()) || []).size;
   }, [products]);
   const totalProducts = uniqueProductCount.toLocaleString();
-  
+
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500">
-      {/* Top Section */}
+    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500  md:px-6">
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
         <div
           className="xl:col-span-2 p-6 md:p-10 rounded-[48px] shadow-premium border min-w-0 transition-all duration-500 hover:shadow-2xl"
@@ -46,27 +46,18 @@ function DashboardHome({ products }) {
             <StatCard title="Refunds" value="84" trend="down" trendValue="-4.5%" color="green" />
           </div>
         </div>
-
-        {/* Weekly Earnings */}
         <div className="xl:col-span-1">
-           <WeeklyEarnings />
+          <WeeklyEarnings />
         </div>
       </div>
-
-      {/* Middle Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
-        {/* Commercial Hub */}
         <div className="xl:col-span-2">
           <CommercialHub />
         </div>
-
-        {/* Order Store */}
         <div className="xl:col-span-1">
           <OrderStore />
         </div>
       </div>
-
-      {/* Bottom Section */}
       <div className="w-full">
         <OrderTable />
       </div>
@@ -74,14 +65,14 @@ function DashboardHome({ products }) {
   );
 }
 
-function MainLayout() {
+function MainLayout({ onLogout }) {
   const { isDark } = useTheme();
-  const [activeItem, setActiveItem] = useState('Products');
+  const [activeItem, setActiveItem] = useState('Dashboard');
   const [activeSubItem, setActiveSubItem] = useState('List Product');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
-  
-  // Central Product State - Restored to LocalStorage
+  const [editingProduct, setEditingProduct] = useState(null);
+
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('mentx_products');
     return saved ? JSON.parse(saved) : [
@@ -95,180 +86,86 @@ function MainLayout() {
     ];
   });
 
-  // Optimized: Debounce LocalStorage to prevent lag when importing/editing many items
   useEffect(() => {
-    const timer = setTimeout(() => {
-      localStorage.setItem('mentx_products', JSON.stringify(products));
-    }, 1000); // Wait 1 second of inactivity before saving
-    return () => clearTimeout(timer);
+    localStorage.setItem('mentx_products', JSON.stringify(products));
   }, [products]);
 
-  const [editingProduct, setEditingProduct] = useState(null);
-
   const handleAddProduct = (newProduct) => {
-    const productWithId = {
-      ...newProduct,
-      id: `#${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
-      sold: '0',
-      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      flag: '📦'
-    };
-    setProducts([productWithId, ...products]);
-    setActiveSubItem('List Product');
-  };
-
-  const handleUpdateProduct = (updatedProduct) => {
-    setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p));
-    setEditingProduct(null);
+    setProducts(prev => [newProduct, ...prev]);
     setActiveSubItem('List Product');
   };
 
   const handleDeleteProduct = (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter(p => p.id !== id));
-    }
-  };
-
-  const handleImportProducts = (importedProducts) => {
-    let lastName = 'Unnamed Product';
-    let lastImageUrl = '';
-
-    const newProducts = importedProducts.map(p => {
-      // Smart search for Name/Title
-      const nameKey = Object.keys(p).find(k => k.includes('name') || k.includes('title') || k.includes('product'));
-      let name = nameKey ? p[nameKey] : '';
-      if (!name || name.trim() === '') name = lastName;
-      else lastName = name;
-      
-      // Smart search for Image
-      const imageKey = Object.keys(p).find(k => k.includes('image') || k.includes('photo') || k.includes('img') || k.includes('url'));
-      let imageUrl = imageKey ? p[imageKey] : '';
-      if (!imageUrl || imageUrl.trim() === '') imageUrl = lastImageUrl;
-      else lastImageUrl = imageUrl;
-
-      const images = imageUrl ? [imageUrl] : [];
-      
-      // Smart search for Price
-      const priceKey = Object.keys(p).find(k => k.includes('price') || k.includes('cost') || k.includes('rate'));
-      let price = p[priceKey] || '₹0.00';
-      if (price && !price.toString().startsWith('₹')) price = `₹${price}`;
-
-      // Smart search for Size/Color
-      const sizeKey = Object.keys(p).find(k => k.includes('size'));
-      const colorKey = Object.keys(p).find(k => k.includes('color') || k.includes('colour'));
-      const skuKey = Object.keys(p).find(k => k.includes('sku') || k.includes('code') || k.includes('id'));
-      const stockKey = Object.keys(p).find(k => k.includes('stock') || k.includes('qty') || k.includes('count'));
-
-      return {
-        id: p.id || `#${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
-        name: name,
-        price: price,
-        sold: p.sold || '0',
-        date: p.date || new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-        status: p.status || 'Active',
-        category: p.category || '',
-        sku: skuKey ? p[skuKey] : '',
-        stock: stockKey ? p[stockKey] : '0',
-        brand: p.brand || '',
-        size: sizeKey ? p[sizeKey] : '',
-        color: colorKey ? p[colorKey] : '',
-        images: images,
-        flag: images.length > 0 ? '' : '📦'
-      };
-    });
-    
-    const uniqueNewProducts = newProducts.filter((v, i, a) => 
-      a.findIndex(t => (t.name === v.name && t.price === v.price && t.sku === v.sku && t.size === v.size && t.color === v.color)) === i
-    );
-
-    setProducts([...uniqueNewProducts, ...products]);
-    alert(`Successfully imported ${uniqueNewProducts.length} products!`);
+    setProducts(prev => prev.filter(p => p.id !== id));
   };
 
   const handleEditClick = (product) => {
     setEditingProduct(product);
+    setActiveItem('Products');
     setActiveSubItem('Add Product');
   };
 
+  const handleUpdateProduct = (updatedProduct) => {
+    setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+    setEditingProduct(null);
+    setActiveSubItem('List Product');
+  };
+
+  const handleImportProducts = (data) => {
+    const newProducts = data.map(p => {
+      const nameKey = Object.keys(p).find(k => k.toLowerCase().includes('name') || k.toLowerCase().includes('product'));
+      let name = nameKey ? p[nameKey] : 'Imported Product';
+      const priceKey = Object.keys(p).find(k => k.toLowerCase().includes('price') || k.toLowerCase().includes('cost'));
+      let price = priceKey ? p[priceKey] : '₹0.00';
+      return {
+        id: `#${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
+        name,
+        price: typeof price === 'number' ? `₹${price.toFixed(2)}` : price,
+        sold: '0',
+        date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'Short', year: '4-digit' }),
+        status: 'In Stock',
+        category: p.category || "Uncategorized",
+        images: p.image ? [p.image] : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30']
+      };
+    });
+    setProducts(prev => [...newProducts, ...prev]);
+  };
+
   return (
-    <div
-      className="flex min-h-screen font-sans selection:bg-blue-500/30 overflow-x-hidden transition-colors duration-300"
-      style={{ backgroundColor: 'var(--bg-root)', color: 'var(--text-primary)' }}
-    >
-      <Sidebar 
-        activeItem={activeItem} 
-        setActiveItem={setActiveItem} 
-        activeSubItem={activeSubItem}
-        setActiveSubItem={setActiveSubItem}
-        isOpen={isSidebarOpen} 
-        setIsOpen={setIsSidebarOpen} 
-      />
-      
+    <div className="flex min-h-screen font-sans selection:bg-blue-500/30 overflow-x-hidden transition-colors duration-300" style={{ backgroundColor: 'var(--bg-root)', color: 'var(--text-primary)' }}>
+      <Sidebar activeItem={activeItem} setActiveItem={setActiveItem} activeSubItem={activeSubItem} setActiveSubItem={setActiveSubItem} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <main className={`flex-1 transition-all duration-300 min-h-screen flex flex-col min-w-0 max-w-full ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-64 ml-0'}`}>
-        <Header 
-          onMenuClick={() => setIsSidebarOpen(true)} 
-          searchQuery={globalSearch}
-          setSearchQuery={setGlobalSearch}
-        />
-        
+        <Header onMenuClick={() => setIsSidebarOpen(true)} searchQuery={globalSearch} setSearchQuery={setGlobalSearch} />
         <div className="flex-1 p-3 md:p-6 min-w-0 max-w-full overflow-y-auto">
-          {activeItem === 'Dashboard' ? <DashboardHome products={products} /> : 
-           activeItem === 'Products' && activeSubItem === 'List Product' ? (
-            <ProductList 
-              products={products}
-              searchQuery={globalSearch}
-              setSearchQuery={setGlobalSearch}
-              onAddProduct={() => {
-                setEditingProduct(null);
-                setActiveItem('Products');
-                setActiveSubItem('Add Product');
-              }} 
-              onDelete={handleDeleteProduct}
-              onEdit={handleEditClick}
-              onImport={handleImportProducts}
-            />
-           ) : activeItem === 'Products' && activeSubItem === 'Add Product' ? (
-            <AddProduct 
-              editingProduct={editingProduct}
-              onSave={editingProduct ? handleUpdateProduct : handleAddProduct}
-              onBack={() => {
-                setEditingProduct(null);
-                setActiveItem('Products');
-                setActiveSubItem('List Product');
-              }} 
-            />
-           ) : activeItem === 'Orders' && activeSubItem === 'Order List' ? (
-            <OrderList onCreateOrder={() => {
-              setActiveItem('Products');
-              setActiveSubItem('Add Product');
-            }} />
-           ) : activeItem === 'People' && activeSubItem === 'Supplier List' ? (
-            <SupplierList />
-           ) : activeItem === 'People' && activeSubItem === 'Customer List' ? (
-            <CustomerList />
-           ) : activeItem === 'Analytics' ? (
-            <Analytics />
-           ) : activeItem === 'Invoice' ? (
-            <Invoice />
-           ) : activeItem === 'Message' ? (
-            <Message />
-           ) : activeItem === 'Help' ? (
-            <Help />
-           ) : activeItem === 'Setting' ? (
-            <Setting />
-           ) : activeItem === 'Logout' ? (
-            <Logout />
-           ) : (
-            <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
-              <div className="p-4 rounded-full bg-brand-blue/10 text-brand-blue">
-                <MoreVertical size={40} />
+          {activeItem === 'Dashboard' ? <DashboardHome products={products} /> :
+            activeItem === 'Products' && activeSubItem === 'List Product' ? (
+              <ProductList products={products} searchQuery={globalSearch} setSearchQuery={setGlobalSearch} onAddProduct={() => { setEditingProduct(null); setActiveSubItem('Add Product'); }} onDelete={handleDeleteProduct} onEdit={handleEditClick} onImport={handleImportProducts} />
+            ) : activeItem === 'Products' && activeSubItem === 'Add Product' ? (
+              <AddProduct editingProduct={editingProduct} onSave={editingProduct ? handleUpdateProduct : handleAddProduct} onBack={() => { setEditingProduct(null); setActiveSubItem('List Product'); }} />
+            ) : activeItem === 'Orders' ? (
+              <OrderList onCreateOrder={() => { setActiveItem('Products'); setActiveSubItem('Add Product'); }} />
+            ) : activeItem === 'People' && activeSubItem === 'Supplier List' ? (
+              <SupplierList />
+            ) : activeItem === 'People' && activeSubItem === 'Customer List' ? (
+              <CustomerList />
+            ) : activeItem === 'Analytics' ? (
+              <Analytics />
+            ) : activeItem === 'Invoice' ? (
+              <Invoice />
+            ) : activeItem === 'Message' ? (
+              <Message />
+            ) : activeItem === 'Help' ? (
+              <Help />
+            ) : activeItem === 'Setting' ? (
+              <Setting />
+            ) : activeItem === 'Logout' ? (
+              <Logout onLogout={onLogout} />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
+                <MoreVertical size={40} className="text-brand-blue" />
+                <h2 className="text-2xl font-bold">{activeItem} Coming Soon!</h2>
               </div>
-              <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                {activeItem} {activeSubItem ? `- ${activeSubItem}` : ''}
-              </h2>
-              <p style={{ color: 'var(--text-muted)' }}>This page is coming soon!</p>
-            </div>
-           )}
+            )}
         </div>
       </main>
     </div>
@@ -276,9 +173,23 @@ function MainLayout() {
 }
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('mentx_auth') === 'true';
+  });
+
+  const handleLogin = () => {
+    localStorage.setItem('mentx_auth', 'true');
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('mentx_auth');
+    setIsAuthenticated(false);
+  };
+
   return (
     <ThemeProvider>
-      <MainLayout />
+      {isAuthenticated ? <MainLayout onLogout={handleLogout} /> : <Login onLogin={handleLogin} />}
     </ThemeProvider>
   );
 }

@@ -190,12 +190,8 @@ export default function SupplierList() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Supplier List</h2>
         <div className="flex items-center gap-3 no-print-area">
-            onClick={handlePrint}
-            className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" 
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
-          >
-            <Printer size={18} /> Print
-          </button>
+          <button onClick={handleExportPDF} className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Download size={18} />Export All PDF</button>
+          <button onClick={handlePrint} className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Printer size={18} />Print</button>
           <button 
             onClick={() => {
               setEditingSupplier(null);
@@ -350,10 +346,10 @@ export default function SupplierList() {
 
       {/* View Supplier Modal - PROFESSIONAL READ-ONLY VIEW */}
       {isViewModalOpen && viewingSupplier && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsViewModalOpen(false)} />
-          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-6 md:p-10 space-y-8">
+          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[24px] sm:rounded-[32px] border shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-in zoom-in-95 duration-300" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 overflow-y-auto custom-scrollbar">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
@@ -429,10 +425,10 @@ export default function SupplierList() {
 
       {/* Edit/Add Supplier Modal - MATCHES IMAGE EXACTLY */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] scrollbar-thin" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-6 md:p-10 space-y-8">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[24px] sm:rounded-[32px] border shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-in zoom-in-95 duration-300" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 overflow-y-auto custom-scrollbar">
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>{editingSupplier ? 'Edit Supplier' : 'Add Supplier'}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="p-2.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">

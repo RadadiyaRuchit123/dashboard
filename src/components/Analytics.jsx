@@ -169,7 +169,7 @@ export default function Analytics() {
     </div>
   );
   return (
-    <div className="space-y-8 md:space-y-12 pb-16 animate-in fade-in duration-1000">
+    <div className="space-y-8 md:space-y-12 pb-16 animate-in fade-in duration-1000 px-4 md:px-6">
       <div className="flex justify-between items-center px-2">
         <div className="space-y-1">
           <h2 className="text-3xl md:text-4xl font-black tracking-[-0.03em]" style={{ color: 'var(--text-primary)' }}>Analytical</h2>

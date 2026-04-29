@@ -16,14 +16,15 @@ const faqsData = [
   { q: 'Is my data secure on this dashboard?', a: 'Yes, we use industry-standard encryption for all your data. Your local storage is handled securely by your browser sessions.' },
 ];
 
-const ContactCard = ({ icon: Icon, title, desc, action, color }) => (
-  <div className="group premium-card p-6 rounded-[32px] border transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-    <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-      <Icon size={24} strokeWidth={2.5} />
+const ContactCard = ({ icon: Icon, title, desc, action, gradient, shadow }) => (
+  <div className="group premium-card p-6 rounded-[32px] border transition-all duration-300 hover:bg-zinc-50 dark:hover:bg-white hover:shadow-xl" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
+    <div className={`w-14 h-14 bg-gradient-to-br ${gradient} ${shadow} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 shadow-lg relative overflow-hidden`}>
+      <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <Icon size={28} strokeWidth={2.5} className="text-white relative z-10" />
     </div>
-    <h4 className="text-sm font-black mb-1" style={{ color: 'var(--text-primary)' }}>{title}</h4>
-    <p className="text-[10px] font-bold text-zinc-400 mb-4">{desc}</p>
-    <button className="text-[10px] font-black text-brand-blue uppercase tracking-widest hover:underline flex items-center gap-2">
+    <h4 className="text-sm font-black mb-1 group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{title}</h4>
+    <p className="text-[10px] font-bold text-zinc-400 mb-6 group-hover:!text-zinc-600">{desc}</p>
+    <button className="text-[10px] font-black text-brand-blue uppercase tracking-widest hover:underline flex items-center gap-2 group-hover:!text-brand-blue">
       {action} <ChevronRight size={14} />
     </button>
   </div>
@@ -34,7 +35,7 @@ export default function Help() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-full overflow-x-hidden">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 max-w-full overflow-x-hidden px-4 md:px-6">
       {/* Hero Section */}
       <div className="relative rounded-[48px] overflow-hidden bg-brand-blue p-12 md:p-20 text-center shadow-2xl shadow-brand-blue/30">
         {/* Animated Background Blobs */}
@@ -60,14 +61,20 @@ export default function Help() {
 
       {/* Popular Categories */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {faqCategories.map((cat, i) => (
+        {[
+          { icon: Book, title: 'Getting Started', count: 12, gradient: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/20' },
+          { icon: LifeBuoy, title: 'General Info', count: 8, gradient: 'from-purple-500 to-purple-600', shadow: 'shadow-purple-500/20' },
+          { icon: Phone, title: 'Connectivity', count: 5, gradient: 'from-green-500 to-green-600', shadow: 'shadow-green-500/20' },
+          { icon: MessageSquare, title: 'Community', count: 15, gradient: 'from-orange-500 to-orange-600', shadow: 'shadow-orange-500/20' },
+        ].map((cat, i) => (
           <div key={i} className="premium-card p-6 md:p-8 rounded-[40px] border flex flex-col items-center text-center space-y-4 hover:translate-y-[-10px] transition-all cursor-pointer group hover:bg-zinc-50 dark:hover:bg-white hover:text-black dark:hover:text-black shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-            <div className={`w-16 h-16 ${cat.bg} ${cat.color} rounded-3xl flex items-center justify-center group-hover:rotate-12 transition-all`}>
-              <cat.icon size={32} strokeWidth={2.5} />
+            <div className={`w-20 h-20 bg-gradient-to-br ${cat.gradient} ${cat.shadow} rounded-[28px] flex items-center justify-center group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500 shadow-xl relative overflow-hidden`}>
+              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <cat.icon size={36} strokeWidth={2.5} className="text-white relative z-10" />
             </div>
             <div>
-              <h3 className="font-black text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>{cat.title}</h3>
-              <p className="text-[10px] font-bold text-zinc-400 mt-1 uppercase tracking-widest">{cat.count} Articles</p>
+              <h3 className="font-black text-xs md:text-sm group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{cat.title}</h3>
+              <p className="text-[10px] font-bold text-zinc-400 mt-1 uppercase tracking-widest group-hover:!text-zinc-600">{cat.count} Articles</p>
             </div>
           </div>
         ))}
@@ -114,21 +121,24 @@ export default function Help() {
               title="Live Chat" 
               desc="Average response time: 2 mins" 
               action="Start Chatting" 
-              color="bg-green-500/10 text-green-500" 
+              gradient="from-green-500 to-emerald-600"
+              shadow="shadow-green-500/20"
             />
             <ContactCard 
               icon={Mail} 
               title="Email Support" 
               desc="support@mentx.dashboard.com" 
               action="Send an Email" 
-              color="bg-blue-500/10 text-blue-500" 
+              gradient="from-blue-500 to-indigo-600"
+              shadow="shadow-blue-500/20"
             />
             <ContactCard 
               icon={Phone} 
               title="Phone Support" 
               desc="+1 (234) 567 890" 
               action="Call Now" 
-              color="bg-purple-500/10 text-purple-500" 
+              gradient="from-purple-500 to-violet-600"
+              shadow="shadow-purple-500/20"
             />
           </div>
 

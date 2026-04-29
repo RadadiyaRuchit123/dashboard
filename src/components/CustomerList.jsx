@@ -338,10 +338,10 @@ export default function CustomerList() {
       )}
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-8 md:p-10 space-y-8">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-[24px] sm:rounded-[32px] border shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh]" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 overflow-y-auto custom-scrollbar">
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>{editingCustomer ? 'Edit Customer' : 'Add Customer'}</h3>
                 <button onClick={() => setIsModalOpen(false)} className="p-2.5 rounded-full hover:bg-zinc-100 transition-colors"><X size={20} className="text-zinc-400" /></button>
@@ -436,10 +436,10 @@ export default function CustomerList() {
       )}
 
       {isViewModalOpen && viewingCustomer && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsViewModalOpen(false)} />
-          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
-            <div className="p-8 md:p-10 space-y-8">
+          <div className="relative w-full max-w-xl bg-white dark:bg-zinc-900 rounded-[24px] sm:rounded-[32px] border shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh]" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="p-5 sm:p-8 md:p-10 space-y-6 sm:space-y-8 overflow-y-auto custom-scrollbar">
               <div className="flex items-center gap-4">
                 <img src={viewingCustomer.avatar} alt="" className="w-20 h-20 rounded-full border-4 border-brand-blue/20" />
                 <div>

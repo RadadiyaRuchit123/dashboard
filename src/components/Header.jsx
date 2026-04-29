@@ -47,20 +47,20 @@ export default function Header({ onMenuClick, searchQuery, setSearchQuery }) {
             className={`absolute left-0 w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/10 border shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all z-10 ${isSearchVisible ? 'border-brand-blue bg-brand-blue/5' : ''}`}
             style={{ borderColor: isSearchVisible ? 'var(--color-brand-blue)' : 'var(--border-color)' }}
           >
-            {isSearchVisible ? <X size={20} className="text-brand-blue" /> : <SearchIcon size={20} style={{ color: 'var(--text-secondary)' }} />}
+            {isSearchVisible ? <X size={20} className="text-brand-blue" /> : <SearchIcon size={20} style={{ color: 'var(--text-primary)' }} />}
           </button>
         </div>
 
         <div className={`flex items-center gap-3 md:gap-4 transition-all duration-500 ${isSearchVisible ? 'hidden md:flex opacity-0 scale-90 translate-x-4' : 'flex opacity-100 scale-100 translate-x-0'}`}>
           {/* Bell */}
           <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white transition-all relative group shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
-            <NotificationIcon size={20} className="group-hover:rotate-12 group-hover:text-black transition-all" style={{ color: 'var(--text-secondary)' }} />
+            <NotificationIcon size={20} className="group-hover:rotate-12 group-hover:!text-black transition-all" style={{ color: 'var(--text-primary)' }} />
             <span className="absolute top-3.5 right-3.5 md:top-4 md:right-4 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0C1021] animate-pulse" />
           </button>
 
           {/* Cart */}
-          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white hover:text-black dark:hover:text-black transition-all shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
-            <ShoppingCart size={20} style={{ color: 'inherit' }} />
+          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] bg-white dark:bg-white/5 border hover:bg-zinc-50 dark:hover:bg-white hover:text-black dark:hover:text-black transition-all shadow-sm group" style={{ borderColor: 'var(--border-color)' }}>
+            <ShoppingCart size={20} className="group-hover:!text-black transition-all" style={{ color: 'var(--text-primary)' }} />
           </button>
 
           {/* Theme Toggle */}

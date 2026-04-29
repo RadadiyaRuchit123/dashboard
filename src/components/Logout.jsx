@@ -2,7 +2,7 @@ import React from 'react';
 import { LogOut, ArrowLeft, ShieldCheck, Zap } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-export default function Logout() {
+export default function Logout({ onLogout }) {
   const { isDark } = useTheme();
 
   return (
@@ -23,7 +23,10 @@ export default function Logout() {
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-             <button className="w-full py-5 bg-rose-500 text-white rounded-[24px] font-black text-sm shadow-xl shadow-rose-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+             <button 
+               onClick={onLogout}
+               className="w-full py-5 bg-rose-500 text-white rounded-[24px] font-black text-sm shadow-xl shadow-rose-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+             >
                Yes, Sign Out Now
              </button>
              <button 

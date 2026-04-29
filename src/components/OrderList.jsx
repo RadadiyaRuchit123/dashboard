@@ -186,18 +186,18 @@ export default function OrderList({ onCreateOrder }) {
     <div className="space-y-8 animate-in fade-in duration-700 relative">
       {/* Premium Order Details Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setSelectedOrder(null)} />
-          <div className="bg-white dark:bg-zinc-900 w-full max-w-5xl rounded-[32px] overflow-hidden shadow-2xl relative animate-in zoom-in duration-300 border border-white/20">
+          <div className="relative w-full max-w-5xl bg-white dark:bg-zinc-900 rounded-[24px] sm:rounded-[32px] border shadow-2xl flex flex-col max-h-[95vh] sm:max-h-[90vh] animate-in zoom-in duration-300 overflow-hidden" style={{ borderColor: 'var(--border-color)' }}>
             {/* Modal Header */}
-            <div className="px-8 py-6 border-b flex justify-between items-center" style={{ borderColor: 'var(--border-color)' }}>
+            <div className="px-6 py-4 sm:px-8 sm:py-6 border-b flex justify-between items-center shrink-0" style={{ borderColor: 'var(--border-color)' }}>
               <h3 className="text-xl font-black" style={{ color: 'var(--text-primary)' }}>Order Details</h3>
               <button onClick={() => setSelectedOrder(null)} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                 <X size={20} />
               </button>
             </div>
             
-            <div className="p-8 overflow-y-auto max-h-[70vh] space-y-10">
+            <div className="p-5 sm:p-8 overflow-y-auto custom-scrollbar space-y-8 sm:space-y-10">
               {/* Top Banner: Order Progress */}
               <div className="p-6 rounded-[24px] bg-brand-blue/5 border border-brand-blue/10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div className="flex items-center gap-4">
