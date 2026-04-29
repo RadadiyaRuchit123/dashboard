@@ -190,14 +190,6 @@ export default function SupplierList() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Supplier List</h2>
         <div className="flex items-center gap-3 no-print-area">
-          <button 
-            onClick={handleExportPDF}
-            className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" 
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
-          >
-            <Download size={18} /> Export PDF
-          </button>
-          <button 
             onClick={handlePrint}
             className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" 
             style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
@@ -219,7 +211,7 @@ export default function SupplierList() {
 
       {/* Filter and Search matches image */}
       <div className="flex items-center gap-4 no-print-area">
-        <button className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 transition-all bg-white dark:bg-zinc-900 shadow-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+        <button className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
           Filter <Filter size={18} />
         </button>
         <div className="relative flex-1 max-w-sm">
@@ -227,8 +219,8 @@ export default function SupplierList() {
           <input 
             type="text" 
             placeholder="Search now" 
-            className="w-full pl-12 pr-4 py-2.5 border rounded-xl focus:outline-none focus:border-brand-blue transition-all font-bold text-sm bg-white dark:bg-zinc-900 shadow-sm" 
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+            className="w-full pl-12 pr-4 py-2.5 border rounded-xl focus:outline-none focus:border-brand-blue transition-all font-bold text-sm shadow-sm" 
+            style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
             value={searchQuery}
             onChange={handleSearchChange}
           />
@@ -253,13 +245,13 @@ export default function SupplierList() {
             </thead>
             <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
               {currentItems.map((s, idx) => (
-                <tr key={idx} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
+                <tr key={idx} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg overflow-hidden bg-zinc-50 p-1 flex items-center justify-center border" style={{ borderColor: 'var(--border-color)' }}>
                         <img src={s.logo} alt="" className="w-full h-full object-contain" />
                       </div>
-                      <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{s.company}</span>
+                      <span className="text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{s.company}</span>
                     </div>
                   </td>
                   <td className="px-8 py-5">
@@ -267,19 +259,19 @@ export default function SupplierList() {
                       <div className="w-8 h-8 rounded-full overflow-hidden shadow-sm border-2 border-white dark:border-zinc-800">
                         <img src={s.avatar} alt="" className="w-full h-full object-cover" />
                       </div>
-                      <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{s.supplier}</span>
+                      <span className="text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{s.supplier}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.date}</td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.email}</td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.phone}</td>
-                  <td className="px-8 py-5 text-xs font-black uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>{s.country}</td>
-                  <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.gst}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.date}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.email}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{s.phone}</td>
+                  <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black uppercase tracking-wider" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{s.country}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{s.gst}</td>
                   <td className="px-8 py-5">
                     <div className="flex items-center justify-end gap-2">
-                      <button onClick={() => handleView(s)} className="p-2.5 rounded-xl border hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-zinc-400 hover:text-brand-blue" style={{ borderColor: 'var(--border-color)' }}><Eye size={15} strokeWidth={3} /></button>
-                      <button onClick={() => handleEdit(s)} className="p-2.5 rounded-xl border hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-zinc-400 hover:text-brand-blue" style={{ borderColor: 'var(--border-color)' }}><Edit2 size={15} strokeWidth={3} /></button>
-                      <button onClick={() => setDeleteConfirmId(s.id)} className="p-2.5 rounded-xl border hover:border-rose-500/30 hover:bg-rose-500/5 transition-all text-zinc-400 hover:text-rose-500" style={{ borderColor: 'var(--border-color)' }}><Trash2 size={15} strokeWidth={3} /></button>
+                      <button onClick={() => handleView(s)} className="p-2.5 rounded-xl border hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-zinc-400 group-hover:text-zinc-600 hover:!text-brand-blue" style={{ borderColor: 'var(--border-color)' }}><Eye size={15} strokeWidth={3} /></button>
+                      <button onClick={() => handleEdit(s)} className="p-2.5 rounded-xl border hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-zinc-400 group-hover:text-zinc-600 hover:!text-brand-blue" style={{ borderColor: 'var(--border-color)' }}><Edit2 size={15} strokeWidth={3} /></button>
+                      <button onClick={() => setDeleteConfirmId(s.id)} className="p-2.5 rounded-xl border hover:border-rose-500/30 hover:bg-rose-500/5 transition-all text-zinc-400 group-hover:text-zinc-600 hover:!text-rose-500" style={{ borderColor: 'var(--border-color)' }}><Trash2 size={15} strokeWidth={3} /></button>
                     </div>
                   </td>
                 </tr>

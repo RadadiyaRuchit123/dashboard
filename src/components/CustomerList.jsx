@@ -176,12 +176,8 @@ export default function CustomerList() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h2 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Customer List</h2>
         <div className="flex items-center gap-3 no-print-area">
-          <button onClick={handleExportPDF} className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
-            <Download size={18} /> Export PDF
-          </button>
-          <button onClick={handlePrint} className="flex items-center gap-2 bg-white dark:bg-zinc-900 border px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all shadow-sm" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
-            <Printer size={18} /> Print
-          </button>
+          <button onClick={handleExportPDF} className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Download size={18} />Export</button>
+          <button onClick={handlePrint} className="flex items-center gap-2 px-6 py-2.5 border rounded-xl font-black text-sm hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}><Printer size={18} />Print</button>
           <button 
             onClick={() => {
               setEditingCustomer(null);
@@ -204,8 +200,8 @@ export default function CustomerList() {
           <input 
             type="text" 
             placeholder="Search customer..." 
-            className="w-full pl-12 pr-4 py-2.5 border rounded-xl focus:outline-none focus:border-brand-blue transition-all font-bold text-sm bg-white dark:bg-zinc-900 shadow-sm" 
-            style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+            className="w-full pl-12 pr-4 py-2.5 border rounded-xl focus:outline-none focus:border-brand-blue transition-all font-bold text-sm shadow-sm" 
+            style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
           />
@@ -229,22 +225,22 @@ export default function CustomerList() {
             </thead>
             <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
               {currentItems.map((c, idx) => (
-                <tr key={idx} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/20 transition-colors group">
+                <tr key={idx} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group cursor-pointer border-b" style={{ borderColor: 'var(--border-color)' }}>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-white dark:border-zinc-800 shadow-sm">
                         <img src={c.avatar} alt="" className="w-full h-full object-cover" />
                       </div>
                       <div>
-                        <p className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>{c.name}</p>
+                        <span className="text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{c.name}</span>
                         <p className="text-[10px] font-bold text-zinc-400">{c.id}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
-                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
-                  <td className="px-8 py-5 text-xs font-bold whitespace-nowrap" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
-                  <td className="px-8 py-5 text-xs font-black text-brand-blue">{currency}{c.spent}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.email}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.phone}</td>
+                  <td className="px-8 py-5 text-xs font-bold transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{c.date}</td>
+                  <td className="px-8 py-5 text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{c.spent}</td>
                   <td className="px-8 py-5">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-lg border ${c.status === 'Active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20'}`}>
                       {c.status}

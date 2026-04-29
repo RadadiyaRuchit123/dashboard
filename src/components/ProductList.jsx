@@ -102,7 +102,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
     }
 
     if (rows.length < 2) return [];
-    
+
     // Normalize headers: lowercase, remove spaces and underscores
     const headers = rows[0].map(h => h.trim().toLowerCase().replace(/[\s_]+/g, ''));
     console.log('Detected Headers:', headers);
@@ -121,9 +121,9 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
 
   const downloadTemplate = () => {
     const headers = ['name', 'price', 'status', 'category', 'sku', 'stock', 'brand', 'size', 'color', 'image'];
-    const csvContent = headers.join(',') + '\n' + 
+    const csvContent = headers.join(',') + '\n' +
       ['Sample Product,₹99.99,In Stock,Fashion,SKU001,50,Nike,XL,Blue,https://images.unsplash.com/photo-1542291026-7eec264c27ff'].join(',');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -137,9 +137,9 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
     return products.filter(p => {
       const name = p.name || '';
       const id = p.id || '';
-      const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           id.toLowerCase().includes(searchQuery.toLowerCase());
-      
+      const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        id.toLowerCase().includes(searchQuery.toLowerCase());
+
       const priceStr = p.price?.toString().replace(currency, '').replace(',', '') || '0';
       const priceValue = parseFloat(priceStr) || 0;
       const matchesPrice = priceValue >= minPrice && priceValue <= maxPrice;
@@ -155,7 +155,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
   const Checkbox = ({ label, count }) => (
     <label className="flex items-center justify-between group cursor-pointer py-1">
       <div className="flex items-center gap-3">
-        <div className="relative flex items-center justify-center w-5 h-5 rounded border-2 transition-all group-hover:border-brand-blue" 
+        <div className="relative flex items-center justify-center w-5 h-5 rounded border-2 transition-all group-hover:border-brand-blue"
           style={{ borderColor: 'var(--border-color)', backgroundColor: 'transparent' }}>
           <input type="checkbox" className="peer absolute opacity-0 w-full h-full cursor-pointer" />
           <div className="w-2.5 h-2.5 bg-brand-blue rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
@@ -172,16 +172,16 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
       <div className="flex justify-between items-center px-2">
         <h2 className="text-xl md:text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>List Product</h2>
         <div className="flex items-center gap-3">
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            accept=".csv" 
-            className="hidden" 
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".csv"
+            className="hidden"
           />
-          <button 
+          <button
             onClick={downloadTemplate}
-            className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-xs hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+            className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-xs hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm"
             style={{ color: 'var(--text-primary)', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
             title="Download CSV Template"
           >
@@ -190,13 +190,13 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
           </button>
           <button 
             onClick={handleImportClick}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-xs hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold text-xs hover:bg-zinc-50 dark:hover:bg-white dark:hover:text-black transition-all shadow-sm"
             style={{ color: 'var(--text-primary)', borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-card)' }}
           >
             <UploadIcon size={16} />
             <span>Import</span>
           </button>
-          <button 
+          <button
             onClick={onAddProduct}
             className="flex items-center gap-2 bg-brand-blue text-white px-6 py-2.5 rounded-xl font-black text-sm shadow-xl shadow-brand-blue/30 hover:scale-[1.02] active:scale-[0.98] transition-all btn-glow"
           >
@@ -208,7 +208,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
         {/* Left Column: Filters */}
-        <div 
+        <div
           className="xl:col-span-1 p-8 rounded-[32px] border shadow-sm h-fit premium-card"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
@@ -232,16 +232,16 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
             <div className="px-1 py-2">
               <div className="relative h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full mb-8">
                 {/* Visual Progress Bar */}
-                <div 
-                  className="absolute h-full bg-brand-blue rounded-full transition-all" 
-                  style={{ 
-                    left: `${(minPrice / 10000) * 100}%`, 
-                    right: `${100 - (maxPrice / 10000) * 100}%` 
-                  }} 
+                <div
+                  className="absolute h-full bg-brand-blue rounded-full transition-all"
+                  style={{
+                    left: `${(minPrice / 10000) * 100}%`,
+                    right: `${100 - (maxPrice / 10000) * 100}%`
+                  }}
                 />
-                
+
                 {/* Min Range Input */}
-                <input 
+                <input
                   type="range"
                   min="0"
                   max="10000"
@@ -253,7 +253,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                   style={{ zIndex: minPrice > 5000 ? 41 : 40 }}
                 />
                 {/* Max Range Input */}
-                <input 
+                <input
                   type="range"
                   min="0"
                   max="10000"
@@ -266,21 +266,21 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                 />
 
                 {/* Custom Handles (Visual Only) */}
-                <div 
-                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-4 border-brand-blue rounded-full shadow-lg pointer-events-none transition-all" 
+                <div
+                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-4 border-brand-blue rounded-full shadow-lg pointer-events-none transition-all"
                   style={{ left: `${(minPrice / 10000) * 100}%`, zIndex: activeHandle === 'min' ? 41 : 31 }}
                 />
-                <div 
-                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-4 border-brand-blue rounded-full shadow-lg pointer-events-none transition-all" 
+                <div
+                  className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-4 border-brand-blue rounded-full shadow-lg pointer-events-none transition-all"
                   style={{ left: `${(maxPrice / 10000) * 100}%`, zIndex: activeHandle === 'max' ? 41 : 31 }}
                 />
               </div>
-              
+
               <div className="flex justify-between items-center gap-4">
-                <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 border px-4 py-2 rounded-xl text-xs font-black text-center" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+                <div className="flex-1 border px-4 py-2 rounded-xl text-xs font-black text-center" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
                   {currency}{(minPrice / 1000).toFixed(0)}k
                 </div>
-                <div className="flex-1 bg-zinc-50 dark:bg-zinc-900/50 border px-4 py-2 rounded-xl text-xs font-black text-center" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+                <div className="flex-1 border px-4 py-2 rounded-xl text-xs font-black text-center" style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
                   {currency}{(maxPrice / 1000).toFixed(0)}k
                 </div>
               </div>
@@ -305,23 +305,23 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
             <div className="flex items-center gap-4 w-full md:auto">
               <div className="relative flex-1 md:w-72 group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-brand-blue transition-colors" size={18} style={{ color: 'var(--text-muted)' }} />
-                <input 
-                  type="text" 
-                  placeholder="Search your product" 
+                <input
+                  type="text"
+                  placeholder="Search your product"
                   className="w-full pl-12 pr-4 py-3 rounded-2xl border text-sm font-bold focus:outline-none focus:border-brand-blue transition-all shadow-sm"
-                  style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
+                  style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <div className="flex items-center p-1 rounded-2xl border shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-                <button 
+                <button
                   onClick={() => setView('list')}
                   className={`p-2 rounded-xl transition-all ${view === 'list' ? 'bg-brand-blue text-white shadow-md' : 'text-zinc-500'}`}
                 >
                   <List size={20} />
                 </button>
-                <button 
+                <button
                   onClick={() => setView('grid')}
                   className={`p-2 rounded-xl transition-all ${view === 'grid' ? 'bg-brand-blue text-white shadow-md' : 'text-zinc-500'}`}
                 >
@@ -351,7 +351,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                 </thead>
                 <tbody className="divide-y" style={{ borderColor: 'var(--border-color)' }}>
                   {visibleProducts.map((p, i) => (
-                    <tr key={p.id || i} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors group border-b" style={{ borderColor: 'var(--border-color)' }}>
+                    <tr key={p.id || i} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group border-b cursor-pointer" style={{ borderColor: 'var(--border-color)' }}>
                       <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.id}</td>
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
@@ -362,7 +362,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                               p.flag || '📦'
                             )}
                           </div>
-                          <span className="text-xs font-black" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
+                          <span className="text-xs font-black transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
                         </div>
                       </td>
                       <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.size || '-'}</td>
@@ -370,7 +370,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                         {p.color ? (
                           <div className="flex items-center gap-2">
                             <span className="w-3 h-3 rounded-full border border-zinc-200" style={{ backgroundColor: p.color.includes('#') ? p.color : 'transparent' }}></span>
-                            <span>{p.color}</span>
+                            <span className="transition-all group-hover:!text-black">{p.color}</span>
                           </div>
                         ) : '-'}
                       </td>
@@ -378,25 +378,24 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                       <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.8 }}>{p.sold}</td>
                       <td className="px-8 py-5 text-xs font-bold" style={{ color: 'var(--text-primary)', opacity: 0.7 }}>{p.date}</td>
                       <td className="px-8 py-5">
-                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-lg inline-block text-center min-w-[100px] border transition-all ${
-                          ['active', 'in stock'].includes(p.status?.toLowerCase()) 
-                            ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20' 
-                            : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, '')) 
-                            ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
-                            : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
-                        }`}>
+                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-lg inline-block text-center min-w-[100px] border transition-all ${['active', 'in stock'].includes(p.status?.toLowerCase())
+                            ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'
+                            : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, ''))
+                              ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
+                              : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
+                          }`}>
                           {p.status}
                         </span>
                       </td>
                       <td className="px-8 py-5">
                         <div className="flex items-center justify-end gap-2">
-                          <button 
+                          <button
                             onClick={() => onEdit(p)}
                             className="p-2.5 rounded-xl border border-transparent hover:border-brand-blue/30 hover:bg-brand-blue/5 transition-all text-[#58a6ff] hover:text-brand-blue shadow-none"
                           >
                             <Edit2 size={15} strokeWidth={3} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => onDelete(p.id)}
                             className="p-2.5 rounded-xl border border-transparent hover:border-rose-500/30 hover:bg-rose-500/5 transition-all text-[#f85149] hover:text-rose-500 shadow-none"
                           >
@@ -428,13 +427,12 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                         <p className="text-[10px] font-bold opacity-50 uppercase tracking-wider">{p.id}</p>
                       </div>
                     </div>
-                    <span className={`text-[9px] font-black px-3 py-1 rounded-lg border uppercase tracking-widest ${
-                      ['active', 'in stock'].includes(p.status?.toLowerCase()) 
-                        ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20' 
-                        : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, '')) 
-                        ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
-                        : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
-                    }`}>
+                    <span className={`text-[9px] font-black px-3 py-1 rounded-lg border uppercase tracking-widest ${['active', 'in stock'].includes(p.status?.toLowerCase())
+                        ? 'bg-[#238636]/10 text-[#3fb950] border-[#238636]/20'
+                        : ['low stock', 'lowstock'].includes(p.status?.toLowerCase().replace(/\s/g, ''))
+                          ? 'bg-[#9e6a03]/10 text-[#d29922] border-[#9e6a03]/20'
+                          : 'bg-[#da3633]/10 text-[#f85149] border-[#da3633]/20'
+                      }`}>
                       {p.status}
                     </span>
                   </div>
@@ -459,7 +457,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-xs transition-all hover:bg-zinc-50" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
+                    <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border font-black text-xs transition-all hover:bg-zinc-50 hover:text-black" style={{ borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}>
                       <Edit2 size={14} /> Edit Product
                     </button>
                     <button onClick={() => onDelete(p.id)} className="w-12 flex items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-500 hover:bg-rose-500 hover:text-white transition-all">
@@ -469,11 +467,11 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                 </div>
               ))}
             </div>
-            
+
             {/* Load More Button */}
             {displayCount < filteredProducts.length && (
               <div className="p-8 flex justify-center border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <button 
+                <button
                   onClick={() => setDisplayCount(prev => prev + 20)}
                   className="px-8 py-3 rounded-2xl bg-brand-blue/10 text-brand-blue font-black text-sm hover:bg-brand-blue hover:text-white transition-all shadow-lg shadow-brand-blue/5"
                 >
@@ -481,7 +479,7 @@ export default function ProductList({ products, searchQuery, setSearchQuery, onA
                 </button>
               </div>
             )}
-            
+
             {/* Entry Summary */}
             <div className="px-8 py-6 flex justify-between items-center border-t" style={{ borderColor: 'var(--border-color)' }}>
               <p className="text-xs font-bold text-zinc-400">Showing {Math.min(displayCount, filteredProducts.length)} of {filteredProducts.length} entries</p>

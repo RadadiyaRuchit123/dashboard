@@ -262,8 +262,8 @@ export default function OrderTable() {
             <div className="relative flex-1 sm:flex-initial">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2" size={14} style={{ color: 'var(--text-muted)' }} />
               <input type="text" placeholder="Search now" value={search} onChange={e => setSearch(e.target.value)}
-                className="rounded-lg py-1.5 pl-9 pr-4 text-xs focus:outline-none w-full sm:w-48 border transition-colors duration-300"
-                style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }}
+                className="rounded-lg py-1.5 pl-9 pr-4 text-xs focus:outline-none w-full sm:w-48 border transition-colors duration-300 shadow-sm"
+                style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border-color)', color: 'var(--text-primary)' }}
               />
             </div>
             <button style={{ color: 'var(--text-muted)' }} className="flex-shrink-0"><MoreVertical size={20} /></button>
@@ -288,27 +288,27 @@ export default function OrderTable() {
             </thead>
             <tbody>
               {filteredOrders.length > 0 ? filteredOrders.map(order => (
-                <tr key={order.id} className="transition-colors group"
-                  style={{ borderTop: '1px solid var(--border-color)' }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--icon-bg)'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
+                <tr key={order.id} className="hover:bg-white hover:text-black dark:hover:bg-white dark:hover:text-black transition-all duration-300 group cursor-pointer border-t"
+                  style={{ borderColor: 'var(--border-color)' }}>
                   <td className="px-4 md:px-6 py-4 text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>{order.displayId}</td>
                   <td className="px-4 md:px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img src={order.image} alt={order.product} className="w-8 h-8 rounded-lg object-cover" />
-                      <span className="text-[11px] font-bold whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>{order.product}</span>
+                    <div className="flex items-center gap-3 transition-all group-hover:!text-black">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 border p-1" style={{ borderColor: 'var(--border-color)' }}>
+                        <img src={order.image} alt="" className="w-full h-full object-cover rounded-lg" />
+                      </div>
+                      <span className="text-xs font-black">{order.product}</span>
                     </div>
                   </td>
-                  <td className="px-4 md:px-6 py-4 text-[11px] font-medium" style={{ color: 'var(--text-secondary)' }}>{order.size}</td>
+                  <td className="px-4 md:px-6 py-4 text-[11px] font-medium transition-all group-hover:!text-black" style={{ color: 'var(--text-secondary)' }}>{order.size}</td>
                   <td className="px-4 md:px-6 py-4">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 transition-all group-hover:!text-black">
                       <img src={order.avatar} alt={order.customer} className="w-6 h-6 rounded-full" />
-                      <span className="text-[11px] font-medium whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>{order.customer}</span>
+                      <span className="text-[11px] font-medium whitespace-nowrap">{order.customer}</span>
                     </div>
                   </td>
-                  <td className="px-4 md:px-6 py-4 text-[11px] font-black whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>{currency}{order.price?.toString().replace(/[₹$]/g, '')}</td>
-                  <td className="px-4 md:px-6 py-4 text-[11px] font-medium whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>{order.method}</td>
-                  <td className="px-4 md:px-6 py-4 text-[11px] font-bold whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>{order.stock}</td>
+                  <td className="px-4 md:px-6 py-4 text-[11px] font-black whitespace-nowrap transition-all group-hover:!text-black" style={{ color: 'var(--text-primary)' }}>{currency}{order.price?.toString().replace(/[₹$]/g, '')}</td>
+                  <td className="px-4 md:px-6 py-4 text-[11px] font-medium whitespace-nowrap transition-all group-hover:!text-black" style={{ color: 'var(--text-muted)' }}>{order.method}</td>
+                  <td className="px-4 md:px-6 py-4 text-[11px] font-bold whitespace-nowrap transition-all group-hover:!text-black" style={{ color: 'var(--text-secondary)' }}>{order.stock}</td>
                   <td className="px-4 md:px-6 py-4">
                     <div className="flex items-center justify-end gap-3 pr-2 md:pr-4">
                       <button onClick={() => setViewOrder(order)} title="View"
@@ -340,10 +340,12 @@ export default function OrderTable() {
         {/* Mobile Card View */}
         <div className="md:hidden divide-y" style={{ borderColor: 'var(--border-color)' }}>
           {filteredOrders.length > 0 ? filteredOrders.map(order => (
-            <div key={order.id} className="p-4 space-y-4" style={{ backgroundColor: 'var(--bg-card)' }}>
+            <div key={order.id} className="p-4 space-y-4 group" style={{ backgroundColor: 'var(--bg-card)' }}>
               <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                  <img src={order.image} alt={order.product} className="w-10 h-10 rounded-xl object-cover" />
+                <div className="flex items-center gap-3 transition-all group-hover:!text-black">
+                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 border p-1" style={{ borderColor: 'var(--border-color)' }}>
+                    <img src={order.image} alt="" className="w-full h-full object-cover rounded-lg" />
+                  </div>
                   <div>
                     <p className="text-[12px] font-bold" style={{ color: 'var(--text-primary)' }}>{order.product}</p>
                     <p className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>{order.displayId}</p>

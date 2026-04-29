@@ -17,8 +17,8 @@ export default function StatCard({ title, value, trend, trendValue, color = "gre
 
   return (
     <div
-      className="p-4 md:p-5 rounded-2xl border transition-colors duration-300"
-      style={{ backgroundColor: 'var(--bg-card-inner)', borderColor: 'var(--border-color)' }}
+      className="p-5 md:p-6 rounded-[32px] border transition-all duration-500 hover:shadow-2xl hover:shadow-brand-blue/5 hover:-translate-y-1 group"
+      style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
     >
       <div className="flex justify-between items-start mb-6">
         <div>
@@ -26,10 +26,10 @@ export default function StatCard({ title, value, trend, trendValue, color = "gre
           <h3 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>{value}</h3>
         </div>
         <div
-          className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase transition-all group-hover:scale-105"
           style={{ backgroundColor: colors.bg, color: colors.text }}
         >
-          {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+          {isPositive ? <TrendingUp size={14} strokeWidth={3} /> : <TrendingDown size={14} strokeWidth={3} />}
           {trendValue}
         </div>
       </div>

@@ -17,7 +17,7 @@ const faqsData = [
 ];
 
 const ContactCard = ({ icon: Icon, title, desc, action, color }) => (
-  <div className="group premium-card p-6 rounded-[32px] border bg-white dark:bg-zinc-900 hover:shadow-2xl hover:shadow-brand-blue/10 transition-all duration-300" style={{ borderColor: 'var(--border-color)' }}>
+  <div className="group premium-card p-6 rounded-[32px] border transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
     <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
       <Icon size={24} strokeWidth={2.5} />
     </div>
@@ -51,7 +51,8 @@ export default function Help() {
             <input 
               type="text" 
               placeholder="Search for articles, guides and more..." 
-              className="w-full pl-16 pr-6 py-6 bg-white rounded-[28px] text-zinc-900 font-bold text-sm shadow-2xl focus:outline-none focus:scale-[1.02] transition-all placeholder:text-zinc-400"
+              className="w-full pl-16 pr-6 py-6 rounded-[28px] font-bold text-sm shadow-2xl focus:outline-none focus:scale-[1.02] transition-all placeholder:text-zinc-400"
+              style={{ backgroundColor: 'var(--bg-input)', color: 'var(--text-primary)' }}
             />
           </div>
         </div>
@@ -60,7 +61,7 @@ export default function Help() {
       {/* Popular Categories */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {faqCategories.map((cat, i) => (
-          <div key={i} className="premium-card p-6 md:p-8 rounded-[40px] border bg-white dark:bg-zinc-900 flex flex-col items-center text-center space-y-4 hover:translate-y-[-10px] transition-all cursor-pointer group hover:bg-zinc-50 dark:hover:bg-zinc-800/50 shadow-sm" style={{ borderColor: 'var(--border-color)' }}>
+          <div key={i} className="premium-card p-6 md:p-8 rounded-[40px] border flex flex-col items-center text-center space-y-4 hover:translate-y-[-10px] transition-all cursor-pointer group hover:bg-zinc-50 dark:hover:bg-white hover:text-black dark:hover:text-black shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
             <div className={`w-16 h-16 ${cat.bg} ${cat.color} rounded-3xl flex items-center justify-center group-hover:rotate-12 transition-all`}>
               <cat.icon size={32} strokeWidth={2.5} />
             </div>
@@ -85,8 +86,8 @@ export default function Help() {
               <div 
                 key={i} 
                 onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
-                className={`p-6 rounded-[32px] bg-white dark:bg-zinc-900 border transition-all cursor-pointer group ${openFaq === i ? 'shadow-xl scale-[1.01]' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`} 
-                style={{ borderColor: openFaq === i ? 'var(--brand-blue)' : 'var(--border-color)' }}
+                className={`p-6 rounded-[32px] border transition-all cursor-pointer group ${openFaq === i ? 'shadow-xl scale-[1.01]' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'}`} 
+                style={{ backgroundColor: 'var(--bg-card)', borderColor: openFaq === i ? 'var(--brand-blue)' : 'var(--border-color)' }}
               >
                 <div className="flex justify-between items-center gap-4">
                   <h4 className={`text-sm font-black transition-colors ${openFaq === i ? 'text-brand-blue' : ''}`} style={{ color: openFaq === i ? '' : 'var(--text-primary)' }}>{faq.q}</h4>

@@ -29,18 +29,17 @@ function DashboardHome({ products }) {
     <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500">
       {/* Top Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6">
-        {/* Overview Section */}
         <div
-          className="xl:col-span-2 p-4 md:p-6 rounded-3xl shadow-xl border min-w-0"
+          className="xl:col-span-2 p-6 md:p-10 rounded-[48px] shadow-premium border min-w-0 transition-all duration-500 hover:shadow-2xl"
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
         >
-          <div className="flex justify-between items-center mb-6 px-1 md:px-2">
-            <h3 className="text-lg md:text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Overview</h3>
-            <button style={{ color: 'var(--text-muted)' }} className="hover:opacity-70 transition-opacity">
+          <div className="flex justify-between items-center mb-10 px-2">
+            <h3 className="text-xl md:text-2xl font-black tracking-[-0.02em]" style={{ color: 'var(--text-primary)' }}>Overview</h3>
+            <button style={{ color: 'var(--text-muted)' }} className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-all">
               <MoreVertical size={20} />
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <StatCard title="Total Order" value="4,584" trend="up" trendValue="+8.5%" color="green" />
             <StatCard title="Cancel Order" value="124" trend="up" trendValue="+2.5%" color="red" />
             <StatCard title="Product" value={totalProducts} trend="up" trendValue="+2.5%" color="yellow" />
@@ -193,7 +192,7 @@ function MainLayout() {
 
   return (
     <div
-      className={`flex min-h-screen font-sans selection:bg-blue-500/30 overflow-x-hidden transition-colors duration-300 ${isDark ? 'dark' : 'light'}`}
+      className="flex min-h-screen font-sans selection:bg-blue-500/30 overflow-x-hidden transition-colors duration-300"
       style={{ backgroundColor: 'var(--bg-root)', color: 'var(--text-primary)' }}
     >
       <Sidebar 

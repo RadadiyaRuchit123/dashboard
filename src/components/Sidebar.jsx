@@ -34,12 +34,10 @@ const otherItems = [
 ];
 
 export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setActiveSubItem, isOpen, setIsOpen }) {
-  const [expandedItems, setExpandedItems] = React.useState(['Products']); // Keep Products expanded by default to match screenshot
+  const [expandedItem, setExpandedItem] = React.useState('Products'); // Only one item at a time
 
   const toggleExpand = (label) => {
-    setExpandedItems(prev => 
-      prev.includes(label) ? prev.filter(item => item !== label) : [...prev, label]
-    );
+    setExpandedItem(prev => prev === label ? null : label);
   };
   return (
     <>
@@ -61,21 +59,23 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
         }}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between mb-10 px-2">
-          <div className="flex items-center gap-3">
-            <div style={{ color: 'var(--text-secondary)' }}>
-              <BoxIcon size={32} />
+        <div className="flex items-center justify-between mb-10 px-2 group cursor-pointer">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-brand-blue blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="relative text-brand-blue">
+                <BoxIcon size={34} strokeWidth={2.5} />
+              </div>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+            <h1 className="text-2xl font-black tracking-[-0.03em]" style={{ color: 'var(--text-primary)' }}>
               Ment X
             </h1>
           </div>
-          {/* Close button for mobile */}
           <button 
-            className="lg:hidden p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="lg:hidden p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors"
             onClick={() => setIsOpen(false)}
           >
-            <MoreVertical size={20} />
+            <MoreVertical size={20} style={{ color: 'var(--text-muted)' }} />
           </button>
         </div>
 
@@ -89,7 +89,7 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
       <nav className="space-y-1 mb-8">
         {menuItems.map((item, index) => {
           const isActive = activeItem === item.label;
-          const isExpanded = expandedItems.includes(item.label);
+          const isExpanded = expandedItem === item.label;
           
           return (
             <div key={index} className="space-y-1">
@@ -107,9 +107,9 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
                     setIsOpen(false);
                   }
                 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                  ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
-                  : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
+                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden ${isActive
+                  ? 'bg-brand-blue text-white shadow-[0_8px_20px_-6px_rgba(97,105,255,0.6)]'
+                  : 'hover:bg-zinc-100/50 dark:hover:bg-white/[0.03]'
                   }`}
               >
                 <div className="flex items-center gap-3">
@@ -128,47 +128,55 @@ export default function Sidebar({ activeItem, setActiveItem, activeSubItem, setA
                 )}
               </button>
 
-                {/* Sub Items - Curved Branch Design */}
-                {item.hasSub && isExpanded && (
-                  <div className="ml-7 space-y-1 mt-1 relative">
-                    {/* Main Vertical Line */}
-                    <div 
-                      className="absolute left-[-12px] top-0 bottom-4 w-[1.5px]" 
-                      style={{ backgroundColor: 'var(--border-color)' }}
-                    />
-                    
-                    {item.subItems.map((sub, subIdx) => {
-                      const isSubActive = isActive && activeSubItem === sub;
-                      return (
-                        <div key={subIdx} className="relative">
-                          {/* Curved Connector Line */}
-                          <div 
-                            className={`absolute left-[-12px] w-[14px] h-[20px] border-l-[1.5px] border-b-[1.5px] rounded-bl-xl transition-colors duration-300 ${
-                              isSubActive ? 'border-brand-blue' : 'border-zinc-200 dark:border-zinc-800'
-                            }`}
-                            style={{ 
-                              top: '-2px',
-                              borderColor: isSubActive ? 'var(--brand-blue)' : 'var(--border-color)'
-                            }}
-                          />
-                          
-                          <button
-                            onClick={() => {
-                              setActiveItem(item.label);
-                              setActiveSubItem(sub);
-                              setIsOpen(false);
-                            }}
-                            className={`w-full text-left ml-3 px-4 py-2.5 text-xs font-bold transition-all duration-300 rounded-xl focus:outline-none ${
-                              isSubActive 
-                                ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20' 
-                                : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100'
-                            }`}
-                          >
-                            <span>{sub}</span>
-                          </button>
-                        </div>
-                      );
-                    })}
+                {/* Sub Items - Curved Branch Design with Smooth Transition */}
+                {item.hasSub && (
+                  <div 
+                    className={`grid transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                      isExpanded ? 'grid-rows-[1fr] opacity-100 mt-1' : 'grid-rows-[0fr] opacity-0 mt-0 pointer-events-none'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="ml-7 space-y-1 relative">
+                        {/* Main Vertical Line */}
+                        <div 
+                          className="absolute left-[-12px] top-0 bottom-4 w-[1.5px]" 
+                          style={{ backgroundColor: 'var(--border-color)' }}
+                        />
+                        
+                        {item.subItems.map((sub, subIdx) => {
+                          const isSubActive = isActive && activeSubItem === sub;
+                          return (
+                            <div key={subIdx} className="relative">
+                              {/* Curved Connector Line */}
+                              <div 
+                                className={`absolute left-[-12px] w-[14px] h-[20px] border-l-[1.5px] border-b-[1.5px] rounded-bl-2xl transition-all duration-500 ${
+                                  isSubActive ? 'border-brand-blue opacity-100' : 'border-zinc-200 dark:border-white/10 opacity-50'
+                                }`}
+                                style={{ 
+                                  top: '-2px',
+                                  borderColor: isSubActive ? 'var(--brand-blue)' : ''
+                                }}
+                              />
+                              
+                              <button
+                                onClick={() => {
+                                  setActiveItem(item.label);
+                                  setActiveSubItem(sub);
+                                  setIsOpen(false);
+                                }}
+                                className={`w-full text-left pl-7 pr-4 py-2.5 text-xs font-bold transition-all duration-300 rounded-xl focus:outline-none ${
+                                  isSubActive 
+                                    ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/20' 
+                                    : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100'
+                                }`}
+                              >
+                                <span>{sub}</span>
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 )}
             </div>
