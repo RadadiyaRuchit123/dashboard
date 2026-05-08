@@ -5,11 +5,18 @@ import { SearchIcon, NotificationIcon } from './icons/CustomIcons';
 
 export default function Header({ onMenuClick, searchQuery, setSearchQuery }) {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+
+  const notifications = [
+    { id: 1, title: 'New Order Received', time: '5 min ago', type: 'order', unread: true },
+    { id: 2, title: 'Server Update Successful', time: '1 hour ago', type: 'system', unread: true },
+    { id: 3, title: 'New Customer Registered', time: '3 hours ago', type: 'user', unread: false },
+  ];
 
   return (
     <header
-      className="h-20 flex items-center justify-between px-4 md:px-8 mx-2 md:mx-6 mt-6 rounded-[28px] sticky top-6 z-10 border transition-all duration-300 glass-header shadow-premium"
+      className="h-20 flex items-center justify-between px-4 md:px-8 mx-2 md:mx-6 mt-6 rounded-[28px] sticky top-6 z-50 border transition-all duration-300 glass-header shadow-premium"
       style={{
         borderColor: 'var(--border-color)',
       }}
@@ -60,10 +67,49 @@ export default function Header({ onMenuClick, searchQuery, setSearchQuery }) {
 
         <div className={`flex items-center gap-3 md:gap-4 transition-all duration-500 ${isSearchVisible ? 'hidden md:flex opacity-0 scale-90 translate-x-4' : 'flex opacity-100 scale-100 translate-x-0'}`}>
           {/* Bell */}
-          <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all relative group shadow-sm" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>
-            <NotificationIcon size={20} className="group-hover:rotate-12 transition-all" style={{ color: 'var(--text-primary)' }} />
-            <span className="absolute top-3.5 right-3.5 md:top-4 md:right-4 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0C1021] animate-pulse" />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+              className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all relative group shadow-sm" 
+              style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}
+            >
+              <NotificationIcon size={20} className="group-hover:rotate-12 transition-all" style={{ color: 'var(--text-primary)' }} />
+              <span className="absolute top-3.5 right-3.5 md:top-4 md:right-4 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#0C1021] animate-pulse" />
+            </button>
+
+            {isNotificationOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsNotificationOpen(false)} />
+                <div className="absolute right-0 mt-4 w-80 bg-white dark:bg-zinc-900 rounded-[32px] border shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right" style={{ borderColor: 'var(--border-color)' }}>
+                  <div className="p-6 border-b" style={{ borderColor: 'var(--border-color)' }}>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-black text-sm" style={{ color: 'var(--text-primary)' }}>Notifications</h3>
+                      <span className="px-2 py-0.5 bg-brand-blue/10 text-brand-blue text-[10px] font-black rounded-full uppercase">2 New</span>
+                    </div>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    {notifications.map((n) => (
+                      <div key={n.id} className={`p-4 hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors cursor-pointer border-b last:border-0 ${n.unread ? 'bg-blue-50/30 dark:bg-brand-blue/5' : ''}`} style={{ borderColor: 'var(--border-color)' }}>
+                        <div className="flex gap-4">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${n.type === 'order' ? 'bg-green-100 text-green-600' : n.type === 'system' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
+                            <NotificationIcon size={18} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-black leading-tight mb-1" style={{ color: 'var(--text-primary)' }}>{n.title}</p>
+                            <p className="text-[10px] font-bold text-zinc-400">{n.time}</p>
+                          </div>
+                          {n.unread && <div className="w-2 h-2 bg-brand-blue rounded-full mt-2 shrink-0" />}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="w-full p-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-brand-blue transition-colors bg-zinc-50/50 dark:bg-white/5">
+                    View All Notifications
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
  
           {/* Cart */}
           <button className="w-11 h-11 md:w-13 md:h-13 flex items-center justify-center rounded-[20px] border hover:opacity-80 transition-all shadow-sm group" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-color)' }}>

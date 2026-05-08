@@ -10,7 +10,12 @@ export default function Setting() {
     email: 'admin@mentx.com',
     phone: '+1 234 567 890',
     bio: 'Administrator for Ment X dashboard.',
-    notifications: true,
+    notifications: {
+      email: true,
+      push: true,
+      order: true,
+      customer: false
+    },
     twoFactor: false
   });
 
@@ -26,6 +31,13 @@ export default function Setting() {
     borderColor: 'var(--border-color)',
     color: 'var(--text-primary)'
   };
+
+  const notificationSettings = [
+    { id: 'email', title: 'Email Notifications', desc: 'Receive daily summary of orders via email.' },
+    { id: 'push', title: 'Push Notifications', desc: 'Get real-time updates on desktop.' },
+    { id: 'order', title: 'Order Updates', desc: 'Notify me when an order status changes.' },
+    { id: 'customer', title: 'New Customer', desc: 'Notify me when a new user registers.' },
+  ];
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
@@ -138,23 +150,72 @@ export default function Setting() {
           {activeTab === 'notifications' && (
             <div className="p-8 md:p-10 space-y-8 animate-in fade-in duration-300">
                <div className="space-y-6">
-                 {[
-                   { title: 'Email Notifications', desc: 'Receive daily summary of orders via email.' },
-                   { title: 'Push Notifications', desc: 'Get real-time updates on desktop.' },
-                   { title: 'Order Updates', desc: 'Notify me when an order status changes.' },
-                   { title: 'New Customer', desc: 'Notify me when a new user registers.' },
-                 ].map((item, i) => (
-                   <div key={i} className="flex items-center justify-between p-6 rounded-[24px] bg-zinc-50/50 dark:bg-zinc-800/20 border border-dashed" style={{ borderColor: 'var(--border-color)' }}>
+                 {notificationSettings.map((item) => (
+                   <div key={item.id} className="flex items-center justify-between p-6 rounded-[24px] bg-zinc-50/50 dark:bg-zinc-800/20 border border-dashed" style={{ borderColor: 'var(--border-color)' }}>
                      <div>
                        <h4 className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>{item.title}</h4>
                        <p className="text-[10px] font-bold text-zinc-400 mt-1">{item.desc}</p>
                      </div>
-                     <div className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" defaultChecked={i < 2} />
+                     <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="sr-only peer" 
+                          checked={formData.notifications[item.id]} 
+                          onChange={() => setFormData({
+                            ...formData,
+                            notifications: {
+                              ...formData.notifications,
+                              [item.id]: !formData.notifications[item.id]
+                            }
+                          })}
+                        />
                         <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
-                     </div>
+                     </label>
                    </div>
                  ))}
+               </div>
+            </div>
+          )}
+
+          {activeTab === 'security' && (
+            <div className="p-8 md:p-10 space-y-10 animate-in fade-in duration-300">
+               <div className="space-y-6">
+                 <div className="space-y-3">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1">Current Password</label>
+                   <input type="password" placeholder="••••••••" className="w-full px-6 py-4 rounded-xl border font-bold text-sm" style={inputStyle} />
+                 </div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <div className="space-y-3">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1">New Password</label>
+                     <input type="password" placeholder="••••••••" className="w-full px-6 py-4 rounded-xl border font-bold text-sm" style={inputStyle} />
+                   </div>
+                   <div className="space-y-3">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 px-1">Confirm New Password</label>
+                     <input type="password" placeholder="••••••••" className="w-full px-6 py-4 rounded-xl border font-bold text-sm" style={inputStyle} />
+                   </div>
+                 </div>
+                 <button className="px-6 py-3 bg-zinc-900 dark:bg-white dark:text-zinc-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all">Update Password</button>
+               </div>
+
+               <div className="pt-8 border-t border-dashed" style={{ borderColor: 'var(--border-color)' }}>
+                 <div className="flex items-center justify-between p-6 rounded-[24px] bg-zinc-50/50 dark:bg-zinc-800/20 border border-dashed" style={{ borderColor: 'var(--border-color)' }}>
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600"><Shield size={24} /></div>
+                     <div>
+                       <h4 className="text-sm font-black" style={{ color: 'var(--text-primary)' }}>Two-Factor Authentication</h4>
+                       <p className="text-[10px] font-bold text-zinc-400 mt-1">Add an extra layer of security to your account.</p>
+                     </div>
+                   </div>
+                   <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={formData.twoFactor} 
+                        onChange={() => setFormData({...formData, twoFactor: !formData.twoFactor})} 
+                      />
+                      <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
+                   </label>
+                 </div>
                </div>
             </div>
           )}
